@@ -17,7 +17,7 @@ struct Production{
 
 };
 
-void pourcentage(Production & p_r){
+void taux_de_production_energie(Production & p_r){
 
 /*
     permet de calculer le taux de production de chaque type de 
@@ -31,7 +31,7 @@ void pourcentage(Production & p_r){
     int production_totale = 0;
     production_totale += p_r.thermique.production + p_r.nucleaire.production + p_r.eolien.production +p_r.solaire.production + p_r.hydraulique.production + p_r.bioenergie.production ;
 
-    // pour faire le pourcentage on fait : (production * 100) / production_totale.
+    // pour faire le taux on fait : (production * 100) / production_totale.
 
     p_r.thermique.taux_production   = (p_r.thermique.production * 100) / production_totale;
     p_r.nucleaire.taux_production   = (p_r.nucleaire.production * 100) / production_totale;
@@ -68,7 +68,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
         flux >>production_region.importation;
 
-        pourcentage(production_region);
+        taux_de_production_energie(production_region);
 
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
@@ -90,7 +90,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
             flux >>production_region.importation;
 
-            pourcentage(production_region);
+            taux_de_production_energie(production_region);
         }
         flux.close();   
     }

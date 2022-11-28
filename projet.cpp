@@ -21,7 +21,7 @@ void pourcentage(Production & p_r){
 
 /*
     permet de calculer le taux de production de chaque type de 
-    production d’une région à partir de l’enregistrement Production et de la somme des productions
+    production d’une région à partir de l’enregistrement Production
 */
 
 

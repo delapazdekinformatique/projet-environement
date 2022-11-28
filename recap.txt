@@ -1,0 +1,16 @@
+1/ lire les productions
+2/ en faire un pourcentage
+3/ trouver le coût moyen 
+4/ ajouter dans la liste si le coût moyen est inférieur à un nombre donné.
+
+18 456 = 100
+5802   = ?  (production + echange physique)
+
+(5802 * 100) / 18456 = 31,43 <=> 31,43 - 100 = -68,57 
+
+
+
+19828 = 100
+18738 = ?
+
+(18738 * 100) / 19828 = 94,502%

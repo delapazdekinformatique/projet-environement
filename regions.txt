@@ -1,0 +1,12 @@
+Île-de-France
+Centre-Val_de_Loire
+Bourgogne-Franche-Comté
+Normandie
+Hauts-de-France
+Grand_Est
+Pays_de_la_Loire
+Bretagne
+Nouvelle-Aquitaine
+Occitanie
+Auvergne-Rhône-Alpes
+Provence-Alpes-Côte_d'Azur

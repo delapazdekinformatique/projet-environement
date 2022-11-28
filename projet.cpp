@@ -6,21 +6,29 @@ using namespace std;
 
 struct Production{
 
-    struct Energie{
+    struct Energie{                      // enregistrement imbriqué à Production qui permet d'avoir la production ainsi que le taux de production 
 
-        double production;
+        double production;               // un double c'est comme un flottant mais en plus précis
         double taux_production = 0;
     };
 
-    int region, mois, jour, heure,importation;
-    Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie;
+    int region, mois, jour, heure,importation;  
+    Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie; // ce qui donne {production,taux_production} pour chaque type de production
 
 };
 
-void pourcentage(Production & p_r, int & production_totale){
+void pourcentage(Production & p_r){
+
+/*
+    permet de calculer le taux de production de chaque type de 
+    production d’une région à partir de l’enregistrement Production et de la somme des productions
+*/
+
+
 
     // on créé la production totale qui est la somme des productions.
     
+    int production_totale = 0;
     production_totale += p_r.thermique.production + p_r.nucleaire.production + p_r.eolien.production +p_r.solaire.production + p_r.hydraulique.production + p_r.bioenergie.production ;
 
     // pour faire le pourcentage on fait : (production * 100) / production_totale.
@@ -43,7 +51,6 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
     liste<Production> liste_production = {};
     int cout_moyen = 0;
-    int pourcent = 0;
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -61,7 +68,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
         flux >>production_region.importation;
 
-        pourcentage(production_region,pourcent);
+        pourcentage(production_region);
 
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
@@ -83,7 +90,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
             flux >>production_region.importation;
 
-            pourcentage(production_region,pourcent);
+            pourcentage(production_region);
         }
         flux.close();   
     }

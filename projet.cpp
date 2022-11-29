@@ -15,7 +15,7 @@ struct Production{
     Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie,importation; // ce qui donne {production,taux_production} pour chaque type de production
 };
 
-void taux_de_production_energie(Production & p_r){
+void taux_de_production_energie(Production & p_r, int & production_totale){
 
 /*
     permet de calculer le taux de production de chaque type de 
@@ -23,7 +23,7 @@ void taux_de_production_energie(Production & p_r){
 */
     // on créé la production totale qui est la somme des productions.
     
-    int production_totale = 0;
+    
     int production_totale_echanges = 0;
     production_totale += p_r.thermique.production + p_r.nucleaire.production + p_r.eolien.production +p_r.solaire.production + p_r.hydraulique.production + p_r.bioenergie.production ;
     production_totale_echanges += p_r.importation.production + production_totale;
@@ -54,8 +54,9 @@ liste<Production> lire_production (string fichier, string fichier_cout){
     liste<Production> liste_production = {};
 
 
-    //int cout_moyen = 0;
-    liste<double> liste_taux ={};
+    int prod_totale = 0; // la production tôtale des 12 régions
+    int echanges_totaux = 0; // les échanges totaux des 12 régions
+    //liste<double> liste_taux ={};
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -73,8 +74,10 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
         flux >>production_region.importation.production;
 
-        taux_de_production_energie(production_region);
-        inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
+        taux_de_production_energie(production_region,prod_totale); // cette procedure permet aussi de récuperer la production totale
+        echanges_totaux += production_region.importation.production;
+        cout << echanges_totaux << endl;
+        //inserer(production_region.importation.production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
 
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
@@ -96,8 +99,10 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
             flux >>production_region.importation.production;
 
-            taux_de_production_energie(production_region);
-            inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
+            taux_de_production_energie(production_region,prod_totale); // cette procedure permet aussi de récuperer la production totale
+            echanges_totaux += production_region.importation.production;
+            cout << echanges_totaux << endl;
+            //inserer(production_region.importation.production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
         }
         flux.close();   
     }

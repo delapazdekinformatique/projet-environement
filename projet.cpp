@@ -3,7 +3,6 @@
 #include "liste.hpp"
 using namespace std;
 
-
 struct Production{
 
     struct Energie{                      // enregistrement imbriqué à Production qui permet d'avoir la production ainsi que le taux de production 
@@ -14,7 +13,6 @@ struct Production{
 
     int region, mois, jour, heure;  
     Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie,importation; // ce qui donne {production,taux_production} pour chaque type de production
-|
 };
 
 void taux_de_production_energie(Production & p_r){
@@ -23,9 +21,6 @@ void taux_de_production_energie(Production & p_r){
     permet de calculer le taux de production de chaque type de 
     production d’une région à partir de l’enregistrement Production
 */
-
-
-
     // on créé la production totale qui est la somme des productions.
     
     int production_totale = 0;
@@ -42,10 +37,13 @@ void taux_de_production_energie(Production & p_r){
     p_r.hydraulique.taux_production = (p_r.hydraulique.production * 100) / production_totale;
     p_r.bioenergie.taux_production  = (p_r.bioenergie.production * 100) / production_totale;
 
-    if (p_r.importation.production < =0)
-    p_r.importation.taux_production = (p_r.importation.production * 100 ) / production_totale_echanges;
-
-}   
+    if (p_r.importation.production >= 0){
+        p_r.importation.taux_production = (p_r.importation.production * 100 ) / production_totale_echanges;
+    }
+    else {
+         p_r.importation.taux_production = (p_r.importation.production * 100 ) / production_totale;
+    }
+}
 
 
 liste<Production> lire_production (string fichier, string fichier_cout){
@@ -53,9 +51,11 @@ liste<Production> lire_production (string fichier, string fichier_cout){
     fstream flux;
 
     Production production_region;
-
     liste<Production> liste_production = {};
-    int cout_moyen = 0;
+
+
+    //int cout_moyen = 0;
+    liste<double> liste_taux ={};
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -74,6 +74,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
         flux >>production_region.importation.production;
 
         taux_de_production_energie(production_region);
+        inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1);
 
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
@@ -96,6 +97,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
             flux >>production_region.importation.production;
 
             taux_de_production_energie(production_region);
+            inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1);
         }
         flux.close();   
     }
@@ -103,6 +105,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
         cout << "Erreur : impossible d'ouvrir " << fichier << endl;
     }*/
     
+
     return liste_production;
 }
 

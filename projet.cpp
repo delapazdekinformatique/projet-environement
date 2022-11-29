@@ -74,7 +74,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
         flux >>production_region.importation.production;
 
         taux_de_production_energie(production_region);
-        inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1);
+        inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
 
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
@@ -97,13 +97,13 @@ liste<Production> lire_production (string fichier, string fichier_cout){
             flux >>production_region.importation.production;
 
             taux_de_production_energie(production_region);
-            inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1);
+            inserer(production_region.importation.taux_production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
         }
         flux.close();   
     }
-    /*else {
+    else {
         cout << "Erreur : impossible d'ouvrir " << fichier << endl;
-    }*/
+    }
     
 
     return liste_production;
@@ -119,18 +119,18 @@ int afficher (liste<Production> t){
 			cout << t[i].jour<< " ";
 			cout << t[i].heure << " ";
 
-            cout << "- " ;
+            cout << "| " ;
 
-            cout << t[i].thermique.taux_production<< " ";
-			cout << t[i].nucleaire.taux_production<< " ";
-			cout << t[i].eolien.taux_production << " ";
-            cout << t[i].solaire.taux_production<< " ";
-			cout << t[i].hydraulique.taux_production<< " ";
-			cout << t[i].bioenergie.taux_production << " ";
+            cout << t[i].thermique.taux_production<< "| ";
+			cout << t[i].nucleaire.taux_production<< "| ";
+			cout << t[i].eolien.taux_production << "| ";
+            cout << t[i].solaire.taux_production<< "| ";
+			cout << t[i].hydraulique.taux_production<< "| ";
+			cout << t[i].bioenergie.taux_production << "| ";
 
-            cout << "- " ;
+            cout << "| " ;
 
-            cout << t[i].importation.taux_production << " " ;
+            cout << t[i].importation.taux_production << "| " ;
 			cout << endl;
 			
 		

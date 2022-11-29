@@ -12,8 +12,8 @@ struct Production{
         double taux_production = 0;
     };
 
-    int region, mois, jour, heure,importation;  
-    Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie; // ce qui donne {production,taux_production} pour chaque type de production
+    int region, mois, jour, heure;  
+    Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie,importation; // ce qui donne {production,taux_production} pour chaque type de production
 
 };
 
@@ -29,7 +29,9 @@ void taux_de_production_energie(Production & p_r){
     // on créé la production totale qui est la somme des productions.
     
     int production_totale = 0;
+    int production_totale_echanges = 0;
     production_totale += p_r.thermique.production + p_r.nucleaire.production + p_r.eolien.production +p_r.solaire.production + p_r.hydraulique.production + p_r.bioenergie.production ;
+    production_totale_echanges += p_r.importation.production + production_totale;
 
     // pour faire le taux on fait : (production * 100) / production_totale.
 
@@ -39,6 +41,8 @@ void taux_de_production_energie(Production & p_r){
     p_r.solaire.taux_production     = (p_r.solaire.production * 100) / production_totale;
     p_r.hydraulique.taux_production = (p_r.hydraulique.production * 100) / production_totale;
     p_r.bioenergie.taux_production  = (p_r.bioenergie.production * 100) / production_totale;
+
+    p_r.importation.taux_production = (p_r.importation.production * 100 ) / production_totale_echanges;
 
 }
 
@@ -66,7 +70,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
         flux >>production_region.hydraulique.production;
         flux >>production_region.bioenergie.production;
 
-        flux >>production_region.importation;
+        flux >>production_region.importation.production;
 
         taux_de_production_energie(production_region);
 
@@ -88,7 +92,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
             flux >>production_region.hydraulique.production;
             flux >>production_region.bioenergie.production;
 
-            flux >>production_region.importation;
+            flux >>production_region.importation.production;
 
             taux_de_production_energie(production_region);
         }
@@ -122,7 +126,7 @@ int afficher (liste<Production> t){
 
             cout << "- " ;
 
-            cout << t[i].importation ;
+            cout << t[i].importation.taux_production << " " ;
 			cout << endl;
 			
 		

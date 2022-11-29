@@ -14,7 +14,7 @@ struct Production{
 
     int region, mois, jour, heure;  
     Energie thermique, nucleaire, eolien, solaire, hydraulique, bioenergie,importation; // ce qui donne {production,taux_production} pour chaque type de production
-
+|
 };
 
 void taux_de_production_energie(Production & p_r){
@@ -42,9 +42,10 @@ void taux_de_production_energie(Production & p_r){
     p_r.hydraulique.taux_production = (p_r.hydraulique.production * 100) / production_totale;
     p_r.bioenergie.taux_production  = (p_r.bioenergie.production * 100) / production_totale;
 
+    if (p_r.importation.production < =0)
     p_r.importation.taux_production = (p_r.importation.production * 100 ) / production_totale_echanges;
 
-}
+}   
 
 
 liste<Production> lire_production (string fichier, string fichier_cout){

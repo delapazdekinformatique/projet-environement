@@ -60,6 +60,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
+        int prod_temp = 0;
         flux >> production_region.region;  // première lecture avant le tant que
 	    flux >>production_region.mois; 
 	    flux >>production_region.jour; 
@@ -74,7 +75,8 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
         flux >>production_region.importation.production;
 
-        taux_de_production_energie(production_region,prod_totale); // cette procedure permet aussi de récuperer la production totale
+        taux_de_production_energie(production_region,prod_temp); // cette procedure permet aussi de récuperer la production totale
+        prod_totale += prod_temp;
         echanges_totaux += production_region.importation.production;
         cout << echanges_totaux << endl;
         //inserer(production_region.importation.production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
@@ -84,6 +86,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
        
        
 	        inserer(production_region,liste_production,taille(liste_production)+1); // liste
+            int prod_temp = 0;
  
             flux >>production_region.region;  
 	        flux >>production_region.mois; 
@@ -99,11 +102,14 @@ liste<Production> lire_production (string fichier, string fichier_cout){
 
             flux >>production_region.importation.production;
 
-            taux_de_production_energie(production_region,prod_totale); // cette procedure permet aussi de récuperer la production totale
+            taux_de_production_energie(production_region,prod_temp); // cette procedure permet aussi de récuperer la production totale
+            prod_totale += prod_temp;
             echanges_totaux += production_region.importation.production;
             cout << echanges_totaux << endl;
             //inserer(production_region.importation.production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
         }
+
+            inserer(production_region,liste_production,taille(liste_production)+1); // on met ici la dernière valeure
         flux.close();   
     }
     else {
@@ -151,6 +157,7 @@ int main(){
 
     liste_p = lire_production("t6.txt","couts.txt");
     afficher(liste_p);
+    cout << taille(liste_p) << endl;
 
     return 0;
 

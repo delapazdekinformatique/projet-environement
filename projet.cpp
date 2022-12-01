@@ -25,6 +25,13 @@ struct tache_calcul{
 
 };
 
+struct Couts{
+	int cout_thermique, cout_nucleaire, cout_eolien, cout_solaire, cout_hydraulique, cout_bioenergie;
+};
+
+
+
+
 void taux_de_production_energie(Production & p_r, int & production_totale){
 
 /*
@@ -53,6 +60,11 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
     else {
          p_r.importation.taux_production = (p_r.importation.production * 100 ) / production_totale;
     }
+}
+
+float couts_moyens(Production p_r, Couts cout) {
+	float resultats = (cout.cout_thermique * p_r.thermique.taux_production) + (cout.cout_nucleaire* p_r.nucleaire.taux_production) + (cout.cout_eolien*p_r.eolien.taux_production) + (cout.cout_solaire * p_r.solaire.taux_production) + (cout.cout_hydraulique *  p_r.hydraulique.taux_production) + (cout.cout_bioenergie *  p_r.bioenergie.taux_production);
+	return resultats;
 }
 
 int cout_marginale_regionale(Production regionale,tache_calcul tache_de_calcul){

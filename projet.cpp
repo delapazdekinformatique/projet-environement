@@ -22,7 +22,7 @@ struct tache_calcul{
 	string nom;
 	float duree,cout_moyen_maximum,cout_marginale_maximum,pourcentage_minimum_production_marginale,pourcentage_maximal_importation,pourcentage_maximal_importation_nationale;
     liste<int> region;	
-    
+
 };
 
 void taux_de_production_energie(Production & p_r, int & production_totale){
@@ -267,7 +267,8 @@ int main(){
     afficher(liste_p);
 
     string nom_fichier = "tache_deb.txt";
-    afficher_tache_calcul(lire_tache_calcul(nom_fichier));
+    tache_calcul t = lire_tache_calcul(nom_fichier);
+    afficher_tache_calcul(t);
     
 
     return 0;

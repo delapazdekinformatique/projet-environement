@@ -17,10 +17,12 @@ struct Production{
 
 
 struct tache_calcul{
+
 	int identifiant,mois_depart,jour_depart,horaire_depart,mois_terminaison,jour_terminaison,horaire_terminaison;
 	string nom;
 	float duree,cout_moyen_maximum,cout_marginale_maximum,pourcentage_minimum_production_marginale,pourcentage_maximal_importation,pourcentage_maximal_importation_nationale;
     liste<int> region;	
+    
 };
 
 void taux_de_production_energie(Production & p_r, int & production_totale){
@@ -148,6 +150,7 @@ liste<Production> lire_production (string fichier, string fichier_cout){
             taux_de_production_energie(production_region,prod_temp); // cette procedure permet aussi de récuperer la production totale
             prod_totale += prod_temp;
             echanges_totaux += production_region.importation.production;
+            
             //inserer(production_region.importation.production,liste_taux,taille(liste_taux)+1); // on mets les taux d'échanges physiques dedans
         }
 

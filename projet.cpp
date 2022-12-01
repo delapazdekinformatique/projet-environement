@@ -77,8 +77,8 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
 
 
 
-float couts_moyens(Production p_r, Couts cout) {
-	float resultats = (cout.cout_thermique * p_r.thermique.taux_production) + (cout.cout_nucleaire* p_r.nucleaire.taux_production) + (cout.cout_eolien*p_r.eolien.taux_production) + (cout.cout_solaire * p_r.solaire.taux_production) + (cout.cout_hydraulique *  p_r.hydraulique.taux_production) + (cout.cout_bioenergie *  p_r.bioenergie.taux_production);
+float couts_moyen(Production p_r, Couts cout) {
+	float resultats = (cout.cout_thermique * (p_r.thermique.taux_production/100)) + (cout.cout_nucleaire* (p_r.nucleaire.taux_production/100)) + (cout.cout_eolien*(p_r.eolien.taux_production/100)) + (cout.cout_solaire * (p_r.solaire.taux_production/100)) + (cout.cout_hydraulique *  (p_r.hydraulique.taux_production/100)) + (cout.cout_bioenergie *  (p_r.bioenergie.taux_production/100));
 	return resultats;
 }
 
@@ -144,6 +144,8 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 
     int prod_totale_nation = 0; // la production tôtale des 12 régions
     int echanges_totaux = 0; // les échanges totaux des 12 régions
+	int cout_marginal = 0; // le cout marginal d'une région
+	float cout_moyen = 0; //le cout moyen des productions d'une region 
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -166,9 +168,18 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
         prod_totale_nation += prod_totale_region; // c'est la production totale de toutes les régions, pas seulement d'une seule région
         echanges_totaux += production_region.importation.production; // pour calculer les echanges physiques totaux
 
-		cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
+		cout_moyen = couts_moyen(production_region,couts);
+		cout << cout_moyen << " - ";
+
+		cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
+		cout << cout_marginal << endl;
         
 		//cout << echanges_totaux << endl;
+
+		// on a le cout moyen , le cout marginal , le taux de production regional et il manque que le taux de production national. 
+		// après ça il faudra créer une fonction qui s'assure que toutes les contraintes sont respectées. SI c'est le cas on renvoit true et on insere la région dans une liste 
+		// prévue pour elle avec le mois, le jour, l'heure, l'id de la région et le cout moyen. SI c'est pas le cas on renvoie false et on passe simplement à la région suivante.
+		
         
 
 
@@ -195,7 +206,12 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
             taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet aussi de récuperer la production totale
             prod_totale_nation += prod_totale_region;
             echanges_totaux += production_region.importation.production;
-			cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region,
+			
+			cout_moyen = couts_moyen(production_region,couts);
+			cout << cout_moyen << " - ";
+
+			cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
+			cout << cout_marginal << endl;
             
         }
 

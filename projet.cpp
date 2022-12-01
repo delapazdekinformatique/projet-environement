@@ -24,7 +24,7 @@ struct tache_calcul{
 
 	int identifiant,mois_depart,jour_depart,horaire_depart,mois_terminaison,jour_terminaison,horaire_terminaison;
 	string nom;
-	float duree,cout_moyen_maximum,cout_marginale_maximum,pourcentage_minimum_production_marginale,pourcentage_maximal_importation,pourcentage_maximal_importation_nationale;
+	float duree,cout_moyen_maximum,cout_marginal_maximum,pourcentage_minimum_production_marginale,pourcentage_maximal_importation,pourcentage_maximal_importation_nationale;
     liste<int> region;	
 
 };
@@ -122,6 +122,28 @@ int cout_marginal_regional(Production regionale,tache_calcul tache_de_calcul, Co
 }
 
 
+bool contraintes(tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int production_region){
+
+	bool conditions = false;
+
+	if (cout_moy < tache_de_calcul.cout_moyen_maximum){
+
+		if (cout_marg < tache_de_calcul.cout_marginal_maximum){
+
+			if (production_region > tache_de_calcul.pourcentage_maximal_importation){
+
+				conditions = true;
+
+			}
+		}
+	}
+
+	return conditions;
+}
+
+
+// créer une fonction qui vérifie la contrainte importation region
+
 // ALGORITHMES POUR LIRE LES FICHIERS
 
 
@@ -172,14 +194,18 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 		cout << cout_moyen << " - ";
 
 		cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
-		cout << cout_marginal << endl;
+		cout << cout_marginal << " - ";
+
+		cout << contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region) << endl;
+
+
         
 		//cout << echanges_totaux << endl;
 
 		// on a le cout moyen , le cout marginal , le taux de production regional et il manque que le taux de production national. 
 		// après ça il faudra créer une fonction qui s'assure que toutes les contraintes sont respectées. SI c'est le cas on renvoit true et on insere la région dans une liste 
 		// prévue pour elle avec le mois, le jour, l'heure, l'id de la région et le cout moyen. SI c'est pas le cas on renvoie false et on passe simplement à la région suivante.
-		
+
         
 
 
@@ -211,8 +237,10 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 			cout << cout_moyen << " - ";
 
 			cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
-			cout << cout_marginal << endl;
+			cout << cout_marginal << " - ";
             
+			cout << contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region) << endl;
+
         }
 
             inserer(production_region,liste_production,taille(liste_production)+1); // on met ici la dernière valeure
@@ -247,7 +275,7 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 		flux >> tache_de_calcul.jour_terminaison;
 		flux >> tache_de_calcul.horaire_terminaison;
 		flux >> tache_de_calcul.cout_moyen_maximum;
-		flux >> tache_de_calcul.cout_marginale_maximum;
+		flux >> tache_de_calcul.cout_marginal_maximum;
 		flux >> tache_de_calcul.pourcentage_minimum_production_marginale;
 		flux >> tache_de_calcul.pourcentage_maximal_importation;
 		flux >> tache_de_calcul.pourcentage_maximal_importation_nationale;
@@ -262,7 +290,7 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 		    flux >> tache_de_calcul.jour_terminaison;
 		    flux >> tache_de_calcul.horaire_terminaison;
 		    flux >> tache_de_calcul.cout_moyen_maximum;
-		    flux >> tache_de_calcul.cout_marginale_maximum;
+		    flux >> tache_de_calcul.cout_marginal_maximum;
 		    flux >> tache_de_calcul.pourcentage_minimum_production_marginale;
 		    flux >> tache_de_calcul.pourcentage_maximal_importation;
 		    flux >> tache_de_calcul.pourcentage_maximal_importation_nationale;
@@ -331,7 +359,7 @@ void afficher_tache_calcul(tache_calcul tache_de_calcul){
 	cout<<"le jour_terminaison est: "<<tache_de_calcul.jour_terminaison<<endl;
 	cout<<"l'horaire_terminaison est: "<<tache_de_calcul.horaire_terminaison<<endl;
 	cout<<"le cout_moyen_maximum est: "<<tache_de_calcul.cout_moyen_maximum<<endl;
-	cout<<"le cout_marginale_maximum est: "<<tache_de_calcul.cout_marginale_maximum<<endl;
+	cout<<"le cout_marginal_maximum est: "<<tache_de_calcul.cout_marginal_maximum<<endl;
 	cout<<"le pourcentage_minimum_production_marginale est: "<<tache_de_calcul.pourcentage_minimum_production_marginale<<endl;
 	cout<<"le pourcentage_maximal_importation est: "<<tache_de_calcul.pourcentage_maximal_importation<<endl;
 	cout<<"le pourcentage_maximal_importation_nationale est: "<<tache_de_calcul.pourcentage_maximal_importation_nationale<<endl;

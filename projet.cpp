@@ -3,6 +3,10 @@
 #include "liste.hpp"
 using namespace std;
 
+
+// STRUCTURES DE DONNEES
+
+
 struct Production{
 
     struct Energie{                      // enregistrement imbriqué à Production qui permet d'avoir la production ainsi que le taux de production 
@@ -28,6 +32,14 @@ struct tache_calcul{
 struct Couts{
 	int cout_thermique, cout_nucleaire, cout_eolien, cout_solaire, cout_hydraulique, cout_bioenergie;
 };
+
+
+
+
+
+
+// FONCTIONS ET PROCEDURES
+
 
 
 
@@ -62,10 +74,16 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
     }
 }
 
+
+
+
 float couts_moyens(Production p_r, Couts cout) {
 	float resultats = (cout.cout_thermique * p_r.thermique.taux_production) + (cout.cout_nucleaire* p_r.nucleaire.taux_production) + (cout.cout_eolien*p_r.eolien.taux_production) + (cout.cout_solaire * p_r.solaire.taux_production) + (cout.cout_hydraulique *  p_r.hydraulique.taux_production) + (cout.cout_bioenergie *  p_r.bioenergie.taux_production);
 	return resultats;
 }
+
+
+
 
 int cout_marginale_regionale(Production regionale,tache_calcul tache_de_calcul){
 	
@@ -103,7 +121,11 @@ int cout_marginale_regionale(Production regionale,tache_calcul tache_de_calcul){
 	return cout_marginale;
 }
 
-liste<Production> lire_production (string fichier, string fichier_cout){
+
+// ALGORITHMES POUR LIRE LES FICHIERS
+
+
+liste<Production> lire_production (string fichier,Couts couts){
 
     fstream flux;
 
@@ -177,6 +199,11 @@ liste<Production> lire_production (string fichier, string fichier_cout){
     return liste_production;
 }
 
+
+
+
+
+
 tache_calcul lire_tache_calcul(string nom_fichier){
 	tache_calcul tache_de_calcul;
 	fstream flux;
@@ -223,7 +250,50 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 
 
 
+
+
+
+
+Couts lire_couts(string fichier){
+	Couts couts;
+	fstream flux;
+	flux.open(fichier, ios::in);
+	
+	if (flux.is_open()) {
+		
+		flux >> couts.cout_thermique;
+		flux >> couts.cout_nucleaire;
+		flux >> couts.cout_eolien;
+		flux >> couts.cout_solaire;
+		flux >> couts.cout_hydraulique;
+		flux >> couts.cout_bioenergie;
+
+		while (flux.good()) {
+
+			flux >> couts.cout_thermique;
+			flux >> couts.cout_nucleaire;
+			flux >> couts.cout_eolien;
+			flux >> couts.cout_solaire;
+			flux >> couts.cout_hydraulique;
+			flux >> couts.cout_bioenergie;
+		}
+		flux.close();
+	}
+	else {
+		cout << "Erreur : impossible d'ouvrir " << fichier << endl;
+	}
+	return couts;
+	
+}
+
+
+
+// AFFICHAGES
+
+
+
 void afficher_tache_calcul(tache_calcul tache_de_calcul){
+
 	cout<<"l'identifiant est: "<<tache_de_calcul.identifiant<<endl;
 	cout<<"le nom est: "<<tache_de_calcul.nom<<endl;
 	cout<<"la duree est: "<<tache_de_calcul.duree<<endl;
@@ -274,8 +344,9 @@ int afficher (liste<Production> t){
 int main(){
 
     liste<Production> liste_p= {};
+	Couts couts_productions = lire_couts("couts.txt");
 
-    liste_p = lire_production("t6.txt","couts.txt");
+    liste_p = lire_production("t6.txt",couts_productions);
     afficher(liste_p);
 
     string nom_fichier = "tache_deb.txt";

@@ -162,7 +162,7 @@ bool contraintes(tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int
 	return conditions;
 }
 
-void cherche_region (Production p_r, Regions r){
+void insere_region (Production p_r, Regions r){
 
 	switch(p_r.region){
 
@@ -171,50 +171,48 @@ void cherche_region (Production p_r, Regions r){
 			break;
 
 		case 2:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.centre_val_de_loire, taille(r.centre_val_de_loire)+1);
 			break;
 
 		case 3:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.bourgogne_franche_comte, taille(r.bourgogne_franche_comte)+1);
 			break;
 
 		case 4:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.normandie, taille(r.normandie)+1);
 			break;
 
 		case 5:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.hauts_de_france, taille(r.hauts_de_france)+1);
 			break;
 			
 		case 6:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.grand_est, taille(r.grand_est)+1);
 			break;
 
 		case 7:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.pays_de_la_loire, taille(r.pays_de_la_loire)+1);
 			break;
 
 		case 8:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.bretagne, taille(r.bretagne)+1);
 			break;
 
 		case 9:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.nouvelle_aquitaine, taille(r.nouvelle_aquitaine)+1);
 			break;
 
 		case 10:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.occitanie, taille(r.occitanie)+1);
 			break;
 
 		case 11:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.auvergne_rhone_alpes, taille(r.auvergne_rhone_alpes)+1);
 			break;
 
 		case 12:
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			inserer(p_r, r.provence_alpes_cote_d_azur, taille(r.provence_alpes_cote_d_azur)+1);
 			break;
-
-
 
 	}
 
@@ -227,7 +225,7 @@ void cherche_region (Production p_r, Regions r){
 // ALGORITHMES POUR LIRE LES FICHIERS
 
 
-liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul){
+Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul){
 
 	/* Paramètres :
 	
@@ -241,7 +239,7 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
     fstream flux;
 
     Production production_region;
-    liste<Production> liste_production = {};
+    //liste<Production> liste_production = {};
 	Regions regions;
 
 
@@ -312,7 +310,8 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est dans la liste des régions de la feuille de calcul
 
 				if (region_id == production_region.region){
-					inserer(production_region,liste_production,taille(liste_production)+1); // si c'est le cas on l'insert dans la liste
+					//inserer(production_region,liste_production,taille(liste_production)+1); // si c'est le cas on l'insert dans la liste
+					insere_region(production_region, regions);
 
 				}
 
@@ -361,8 +360,8 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 			for (long unsigned int region_id : tache_de_calcul.region){
 
 				if (region_id == production_region.region){
-					inserer(production_region,liste_production,taille(liste_production)+1); // liste
-
+					//inserer(production_region,liste_production,taille(liste_production)+1); // liste
+					insere_region(production_region, regions);
 				}
 
 			}
@@ -373,7 +372,7 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
     }
     
 
-    return liste_production;
+    return regions;
 }
 
 
@@ -522,6 +521,101 @@ int afficher (liste<Production> t){
 
 }
 
+int afficher_contenu_region (liste<Production> region, int id, Couts couts){
+
+	switch (id){
+
+		case 1 :
+			cout << "Île-de-France" << " " << taille(region) << endl;
+
+			break;
+
+		case 2 :
+			cout << "Centre-Val_de_Loire" << " " << taille(region) << endl;
+
+			break;
+
+		case 3 :
+			cout << "Bourgogne-Franche-Comté" << " " << taille(region) << endl;
+
+			break;
+
+		case 4 :
+			cout << "Normandie" << " " << taille(region) << endl;
+
+			break;
+
+		case 5 :
+			cout << "Hauts-de-France" << " " << taille(region) << endl;
+
+			break;
+
+		case 6 :
+			cout << "Grand_Est" << " " << taille(region) << endl;
+
+			break;
+
+		case 7 :
+			cout << "Pays_de_la_Loire" << " " << taille(region) << endl;
+
+			break;
+
+		case 8 :
+			cout << "Bretagne" << " " << taille(region) << endl;
+
+			break;
+
+		case 9 :
+			cout << "Nouvelle-Aquitaine" << " " << taille(region) << endl;
+
+			break;
+
+		case 10 :
+			cout << "Occitanie" << " " << taille(region) << endl;
+
+			break;
+
+		case 11 :
+			cout << "Auvergne-Rhône-Alpes" << " " << taille(region) << endl;
+
+			break;
+
+		case 12 :
+			cout << "Provence-Alpes-Côte_d'Azur" << " " << taille(region) << endl;
+
+			break;
+
+	}
+
+	for (Production ele : region){
+
+		cout << ele.mois << " " << ele.jour << " " << ele.heure << " " << ele.region << " " << couts_moyen(ele, couts) << endl;
+
+	}	
+
+	return 0;
+}
+
+
+int afficher_regions (Regions r,Couts couts){
+
+	afficher_contenu_region(r.ile_de_france,1,couts);
+	afficher_contenu_region(r.centre_val_de_loire,2,couts);
+	afficher_contenu_region(r.bourgogne_franche_comte,3,couts);
+	afficher_contenu_region(r.normandie,4,couts);
+	afficher_contenu_region(r.hauts_de_france,5,couts);
+	afficher_contenu_region(r.grand_est,6,couts);
+	afficher_contenu_region(r.pays_de_la_loire,7,couts);
+	afficher_contenu_region(r.bretagne,8,couts);
+	afficher_contenu_region(r.nouvelle_aquitaine,9,couts);
+	afficher_contenu_region(r.occitanie,10,couts);
+	afficher_contenu_region(r.auvergne_rhone_alpes,11,couts);
+	afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts);
+
+	return 0;
+
+}
+
 int main(){
 
     liste<Production> liste_p= {};
@@ -531,7 +625,7 @@ int main(){
 
     string nom_fichier = "tache_deb.txt";
     tache_calcul t = lire_tache_calcul(nom_fichier);
-    afficher_tache_calcul(t);
+    //afficher_tache_calcul(t);
 
     liste_p = lire_production("t6.txt",couts_productions,t);
     afficher(liste_p);

@@ -179,7 +179,27 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 
 		
         int prod_totale_region = 0;
+		bool est_dans_region = false;
+
+
         flux >> production_region.region;  // première lecture avant le tant que
+
+
+		for (long unsigned int region_id : tache_de_calcul.region){
+
+			if (region_id == production_region.region){
+
+				est_dans_region = true;
+
+			}
+
+		}
+
+
+		if (est_dans_region){
+
+		cout << "ok" << endl;
+
 	    flux >>production_region.mois; 
 	    flux >>production_region.jour; 
 	    flux >>production_region.heure;
@@ -192,6 +212,8 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
         flux >>production_region.bioenergie.production;
 
         flux >>production_region.importation.production;
+
+
 
         taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet d'avoirs les taux de productions et de récuperer la production totale
         prod_totale_nation += prod_totale_region; // c'est la production totale de toutes les régions, pas seulement d'une seule région
@@ -217,15 +239,34 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 		// prévue pour elle avec le mois, le jour, l'heure, l'id de la région et le cout moyen. SI c'est pas le cas on renvoie false et on passe simplement à la région suivante.
 
         
-
+		}
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
        
        
 	        inserer(production_region,liste_production,taille(liste_production)+1); // liste
             int prod_totale_region = 0;
+			bool est_dans_region = false;
  
-            flux >>production_region.region;  
+            flux >>production_region.region; 
+
+			cout << production_region.region << "---(-(-" << endl;
+
+			for (long unsigned int region_id : tache_de_calcul.region){
+
+				if (region_id == production_region.region){
+
+					cout << region_id << "___" << production_region.region << endl;
+
+					est_dans_region = true;
+
+				}
+
+			}
+
+
+			if (est_dans_region){
+			cout << "ok" << endl;
 	        flux >>production_region.mois; 
 	        flux >>production_region.jour; 
 	        flux >>production_region.heure;
@@ -252,6 +293,9 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 			cout << contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region) << endl;
 
         }
+
+
+		}
 
             inserer(production_region,liste_production,taille(liste_production)+1); // on met ici la dernière valeure
         flux.close();   

@@ -172,10 +172,12 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
     int echanges_totaux = 0; // les échanges totaux des 12 régions
 	int cout_marginal = 0; // le cout marginal d'une région
 	float cout_moyen = 0; //le cout moyen des productions d'une region 
-	float importation_nationale = 0;
+	float importation_nationale = 0; // importation nationale 
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
+
+		
         int prod_totale_region = 0;
         flux >> production_region.region;  // première lecture avant le tant que
 	    flux >>production_region.mois; 
@@ -420,7 +422,7 @@ int main(){
     afficher_tache_calcul(t);
 
     liste_p = lire_production("t6.txt",couts_productions,t);
-    //afficher(liste_p);
+    afficher(liste_p);
     
 
     return 0;

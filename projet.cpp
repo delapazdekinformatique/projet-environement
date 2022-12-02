@@ -20,7 +20,7 @@ struct Production{
 };
 
 
-struct tache_calcul{
+struct tache_calcul{ // enregistrement qui contient les données de la feuille de calcul (nombre de régions, cout marginal , etc)
 
 	int identifiant,mois_depart,jour_depart,horaire_depart,mois_terminaison,jour_terminaison,horaire_terminaison;
 	string nom;
@@ -29,8 +29,25 @@ struct tache_calcul{
 
 };
 
-struct Couts{
+struct Couts{  // enregistrement qui contient les couts de productions de chaque énergie
 	int cout_thermique, cout_nucleaire, cout_eolien, cout_solaire, cout_hydraulique, cout_bioenergie;
+};
+
+struct Regions{
+
+	liste<Production> ile_de_france = {};
+	liste<Production> centre_val_de_loire = {};
+	liste<Production> bourgogne_franche_comte = {};
+	liste<Production> normandie = {};
+	liste<Production> hauts_de_france = {};
+	liste<Production> grand_est = {};
+	liste<Production> pays_de_la_loire = {};
+	liste<Production> bretagne = {};
+	liste<Production> nouvelle_aquitaine = {};
+	liste<Production> occitanie = {};
+	liste<Production> auvergne_rhone_alpes = {};
+	liste<Production> provence_alpes_cote_d_azur = {};
+
 };
 
 
@@ -145,6 +162,65 @@ bool contraintes(tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int
 	return conditions;
 }
 
+void cherche_region (Production p_r, Regions r){
+
+	switch(p_r.region){
+
+		case 1 :
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 2:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 3:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 4:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 5:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+			
+		case 6:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 7:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 8:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 9:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 10:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 11:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+		case 12:
+			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			break;
+
+
+
+	}
+
+
+}
+
 
 // créer une fonction qui vérifie la contrainte importation region
 
@@ -166,6 +242,7 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 
     Production production_region;
     liste<Production> liste_production = {};
+	Regions regions;
 
 
     int prod_totale_nation = 0; // la production tôtale des 12 régions
@@ -174,32 +251,20 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 	float cout_moyen = 0; //le cout moyen des productions d'une region 
 	float importation_nationale = 0; // importation nationale 
 
+
+	
+
+
+
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
 
 		
         int prod_totale_region = 0;
-		bool est_dans_region = false;
 
 
-        flux >> production_region.region;  // première lecture avant le tant que
 
-
-		for (long unsigned int region_id : tache_de_calcul.region){
-
-			if (region_id == production_region.region){
-
-				est_dans_region = true;
-
-			}
-
-		}
-
-
-		if (est_dans_region){
-
-		cout << "ok" << endl;
-
+        flux >>production_region.region;  // première lecture avant le tant que
 	    flux >>production_region.mois; 
 	    flux >>production_region.jour; 
 	    flux >>production_region.heure;
@@ -239,65 +304,68 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 		// prévue pour elle avec le mois, le jour, l'heure, l'id de la région et le cout moyen. SI c'est pas le cas on renvoie false et on passe simplement à la région suivante.
 
         
-		}
+		
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
        
-       
-	        inserer(production_region,liste_production,taille(liste_production)+1); // liste
+			
+			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est dans la liste des régions de la feuille de calcul
+
+				if (region_id == production_region.region){
+					inserer(production_region,liste_production,taille(liste_production)+1); // si c'est le cas on l'insert dans la liste
+
+				}
+
+			}			
+
+
             int prod_totale_region = 0;
-			bool est_dans_region = false;
- 
             flux >>production_region.region; 
+			cout << production_region.region << " region" << endl;
 
-			cout << production_region.region << "---(-(-" << endl;
 
+
+
+
+				cout << "ok" << endl;
+	        	flux >>production_region.mois; 
+	        	flux >>production_region.jour; 
+	        	flux >>production_region.heure;
+
+            	flux >>production_region.thermique.production; //pour acceder au taux : -->production_region.thermique.taux_production (le definir)
+            	flux >>production_region.nucleaire.production; // les productions de chaque moyen de production
+            	flux >>production_region.eolien.production;
+            	flux >>production_region.solaire.production;
+            	flux >>production_region.hydraulique.production;
+            	flux >>production_region.bioenergie.production;
+
+            	flux >>production_region.importation.production;
+
+            	taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet aussi de récuperer la production totale
+            	prod_totale_nation += prod_totale_region;
+            	echanges_totaux += production_region.importation.production;
+			
+				cout_moyen = couts_moyen(production_region,couts);
+				cout << cout_moyen << " - ";
+
+				cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
+				cout << cout_marginal << " - ";
+            
+				cout << contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region) << endl;
+
+        	
+
+
+		}
+			
 			for (long unsigned int region_id : tache_de_calcul.region){
 
 				if (region_id == production_region.region){
-
-					cout << region_id << "___" << production_region.region << endl;
-
-					est_dans_region = true;
+					inserer(production_region,liste_production,taille(liste_production)+1); // liste
 
 				}
 
 			}
-
-
-			if (est_dans_region){
-			cout << "ok" << endl;
-	        flux >>production_region.mois; 
-	        flux >>production_region.jour; 
-	        flux >>production_region.heure;
-
-            flux >>production_region.thermique.production; //pour acceder au taux : -->production_region.thermique.taux_production (le definir)
-            flux >>production_region.nucleaire.production; // les productions de chaque moyen de production
-            flux >>production_region.eolien.production;
-            flux >>production_region.solaire.production;
-            flux >>production_region.hydraulique.production;
-            flux >>production_region.bioenergie.production;
-
-            flux >>production_region.importation.production;
-
-            taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet aussi de récuperer la production totale
-            prod_totale_nation += prod_totale_region;
-            echanges_totaux += production_region.importation.production;
-			
-			cout_moyen = couts_moyen(production_region,couts);
-			cout << cout_moyen << " - ";
-
-			cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
-			cout << cout_marginal << " - ";
-            
-			cout << contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region) << endl;
-
-        }
-
-
-		}
-
-            inserer(production_region,liste_production,taille(liste_production)+1); // on met ici la dernière valeure
         flux.close();   
     }
     else {

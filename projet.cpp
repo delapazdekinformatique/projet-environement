@@ -75,6 +75,10 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
 }
 
 
+float echanges_nationaux (int echanges_totaux, int production_totale) {
+	float resultats = (echanges_totaux*100) / production_totale;
+	return resultats;
+}
 
 
 float couts_moyen(Production p_r, Couts cout) {
@@ -168,6 +172,7 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
     int echanges_totaux = 0; // les échanges totaux des 12 régions
 	int cout_marginal = 0; // le cout marginal d'une région
 	float cout_moyen = 0; //le cout moyen des productions d'une region 
+	float importation_nationale = 0;
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -195,6 +200,9 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 
 		cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
 		cout << cout_marginal << " - ";
+
+		
+
 
 		cout << contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region) << endl;
 
@@ -259,9 +267,13 @@ liste<Production> lire_production (string fichier,Couts couts,tache_calcul tache
 
 
 
+
+
 tache_calcul lire_tache_calcul(string nom_fichier){
 	tache_calcul tache_de_calcul;
 	fstream flux;
+	liste<int> l =  {};
+	int nb;
 	
 	flux.open(nom_fichier, ios::in);
 	if (flux.is_open()) {
@@ -279,22 +291,19 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 		flux >> tache_de_calcul.pourcentage_minimum_production_marginale;
 		flux >> tache_de_calcul.pourcentage_maximal_importation;
 		flux >> tache_de_calcul.pourcentage_maximal_importation_nationale;
-		while (flux.good()) {
-			flux >> tache_de_calcul.identifiant;
-		    flux >> tache_de_calcul.nom;
-		    flux >> tache_de_calcul.duree;
-		    flux >> tache_de_calcul.mois_depart;
-		    flux >> tache_de_calcul.jour_depart;
-		    flux >> tache_de_calcul.horaire_depart;
-		    flux >> tache_de_calcul.mois_terminaison;
-		    flux >> tache_de_calcul.jour_terminaison;
-		    flux >> tache_de_calcul.horaire_terminaison;
-		    flux >> tache_de_calcul.cout_moyen_maximum;
-		    flux >> tache_de_calcul.cout_marginal_maximum;
-		    flux >> tache_de_calcul.pourcentage_minimum_production_marginale;
-		    flux >> tache_de_calcul.pourcentage_maximal_importation;
-		    flux >> tache_de_calcul.pourcentage_maximal_importation_nationale;
-			}
+		flux >> nb;
+		// on lit les régions
+
+		while (flux.good()){
+
+			inserer(nb, l, taille(l)+1);
+
+			flux >> nb ;
+		}
+
+			tache_de_calcul.region = l;
+
+		
 		flux.close();   
 	}
 	else {
@@ -323,15 +332,6 @@ Couts lire_couts(string fichier){
 		flux >> couts.cout_hydraulique;
 		flux >> couts.cout_bioenergie;
 
-		while (flux.good()) {
-
-			flux >> couts.cout_thermique;
-			flux >> couts.cout_nucleaire;
-			flux >> couts.cout_eolien;
-			flux >> couts.cout_solaire;
-			flux >> couts.cout_hydraulique;
-			flux >> couts.cout_bioenergie;
-		}
 		flux.close();
 	}
 	else {
@@ -345,6 +345,15 @@ Couts lire_couts(string fichier){
 
 // AFFICHAGES
 
+int afficher(liste<int>l){
+	cout<<"<";
+	for(int c:l){
+		cout<<c<<' ';
+	};
+	cout<<">"<<endl;
+
+	return 0;
+}
 
 
 void afficher_tache_calcul(tache_calcul tache_de_calcul){
@@ -363,7 +372,10 @@ void afficher_tache_calcul(tache_calcul tache_de_calcul){
 	cout<<"le pourcentage_minimum_production_marginale est: "<<tache_de_calcul.pourcentage_minimum_production_marginale<<endl;
 	cout<<"le pourcentage_maximal_importation est: "<<tache_de_calcul.pourcentage_maximal_importation<<endl;
 	cout<<"le pourcentage_maximal_importation_nationale est: "<<tache_de_calcul.pourcentage_maximal_importation_nationale<<endl;
+	cout<<"les régions concernées sont: ";
+	afficher (tache_de_calcul.region);
 }
+
 
 
 int afficher (liste<Production> t){

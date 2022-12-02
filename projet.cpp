@@ -405,10 +405,10 @@ int main(){
 
     string nom_fichier = "tache_deb.txt";
     tache_calcul t = lire_tache_calcul(nom_fichier);
-   // afficher_tache_calcul(t);
+    afficher_tache_calcul(t);
 
     liste_p = lire_production("t6.txt",couts_productions,t);
-    afficher(liste_p);
+    //afficher(liste_p);
     
 
     return 0;

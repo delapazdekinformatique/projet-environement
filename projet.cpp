@@ -143,7 +143,7 @@ int cout_marginal_regional(Production regionale,tache_calcul tache_de_calcul, Co
 }
 
 
-bool contraintes(tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int production_region){
+bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int production_region){
 
 	bool conditions = false;
 
@@ -151,11 +151,19 @@ bool contraintes(tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int
 
 		if (cout_marg < tache_de_calcul.cout_marginal_maximum){
 
-			if (production_region > tache_de_calcul.pourcentage_maximal_importation){
-				
+			if (production_region >= tache_de_calcul.pourcentage_maximal_importation){
 
-				conditions = true;
+				if (production.mois >= tache_de_calcul.mois_depart and production.mois <= tache_de_calcul.mois_terminaison){
 
+					if (production.jour >= tache_de_calcul.jour_depart and production.jour <= tache_de_calcul.jour_terminaison){
+	
+						if (production.heure >= tache_de_calcul.horaire_depart and production.heure <= tache_de_calcul.horaire_terminaison){
+
+							conditions = true;
+					
+						}
+					}	
+				}
 			}
 		}
 	}
@@ -163,58 +171,80 @@ bool contraintes(tache_calcul tache_de_calcul, int cout_marg, float cout_moy,int
 	return conditions;
 }
 
-void insere_region (Production p_r, Regions & r){
+void insere_region (Production p_r, Regions & r, tache_calcul tache_de_calcul){
 
 	switch(p_r.region){
 
 		case 1 :
-			inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
-			cout << "ici" << endl;
+			if (taille(r.ile_de_france) < tache_de_calcul.duree){
+				inserer(p_r, r.ile_de_france, taille(r.ile_de_france)+1);
+			}
 			break;
 
 		case 2:
-			inserer(p_r, r.centre_val_de_loire, taille(r.centre_val_de_loire)+1);
-			cout << taille(r.centre_val_de_loire) << endl;
+			if (taille(r.centre_val_de_loire) < tache_de_calcul.duree){
+				inserer(p_r, r.centre_val_de_loire, taille(r.centre_val_de_loire)+1);
+			}
 			break;
 
 		case 3:
-			inserer(p_r, r.bourgogne_franche_comte, taille(r.bourgogne_franche_comte)+1);
+			if (taille(r.bourgogne_franche_comte) < tache_de_calcul.duree){
+				inserer(p_r, r.bourgogne_franche_comte, taille(r.bourgogne_franche_comte)+1);
+			}
 			break;
 
 		case 4:
-			inserer(p_r, r.normandie, taille(r.normandie)+1);
+			if (taille(r.normandie) < tache_de_calcul.duree){
+				inserer(p_r, r.normandie, taille(r.normandie)+1);
+			}
 			break;
 
 		case 5:
-			inserer(p_r, r.hauts_de_france, taille(r.hauts_de_france)+1);
+			if (taille(r.hauts_de_france) < tache_de_calcul.duree){
+				inserer(p_r, r.hauts_de_france, taille(r.hauts_de_france)+1);
+			}
 			break;
 			
 		case 6:
-			inserer(p_r, r.grand_est, taille(r.grand_est)+1);
+			if (taille(r.grand_est) < tache_de_calcul.duree){
+				inserer(p_r, r.grand_est, taille(r.grand_est)+1);
+			}
 			break;
 
 		case 7:
-			inserer(p_r, r.pays_de_la_loire, taille(r.pays_de_la_loire)+1);
+			if (taille(r.pays_de_la_loire) < tache_de_calcul.duree){
+				inserer(p_r, r.pays_de_la_loire, taille(r.pays_de_la_loire)+1);
+			}
 			break;
 
 		case 8:
-			inserer(p_r, r.bretagne, taille(r.bretagne)+1);
+			if (taille(r.bretagne) < tache_de_calcul.duree){
+				inserer(p_r, r.bretagne, taille(r.bretagne)+1);
+			}
 			break;
 
 		case 9:
-			inserer(p_r, r.nouvelle_aquitaine, taille(r.nouvelle_aquitaine)+1);
+			if (taille(r.nouvelle_aquitaine) < tache_de_calcul.duree){
+				inserer(p_r, r.nouvelle_aquitaine, taille(r.nouvelle_aquitaine)+1);
+			}
 			break;
 
 		case 10:
-			inserer(p_r, r.occitanie, taille(r.occitanie)+1);
+			if (taille(r.occitanie) < tache_de_calcul.duree){
+				inserer(p_r, r.occitanie, taille(r.occitanie)+1);
+			}
 			break;
 
 		case 11:
-			inserer(p_r, r.auvergne_rhone_alpes, taille(r.auvergne_rhone_alpes)+1);
+			if (taille(r.auvergne_rhone_alpes) < tache_de_calcul.duree){
+				inserer(p_r, r.auvergne_rhone_alpes, taille(r.auvergne_rhone_alpes)+1);
+			}
 			break;
 
 		case 12:
-			inserer(p_r, r.provence_alpes_cote_d_azur, taille(r.provence_alpes_cote_d_azur)+1);
+			if (taille(r.provence_alpes_cote_d_azur) < tache_de_calcul.duree){
+				inserer(p_r, r.provence_alpes_cote_d_azur, taille(r.provence_alpes_cote_d_azur)+1);
+			}
 			break;
 
 	}
@@ -296,9 +326,9 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est dans la liste des régions de la feuille de calcul
 
-				if (region_id == production_region.region and contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
+				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 					//inserer(production_region,liste_production,taille(liste_production)+1); // si c'est le cas on l'insert dans la liste
-					insere_region(production_region, regions);
+					insere_region(production_region, regions, tache_de_calcul);
 
 				}
 
@@ -338,9 +368,9 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			
 			for (long unsigned int region_id : tache_de_calcul.region){
 
-				if (region_id == production_region.region and contraintes(tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
+				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 					//inserer(production_region,liste_production,taille(liste_production)+1); // liste
-					insere_region(production_region, regions);
+					insere_region(production_region, regions, tache_de_calcul);
 				}
 
 			}
@@ -620,7 +650,7 @@ int main(){
     tache_calcul t = lire_tache_calcul(nom_fichier);
     //afficher_tache_calcul(t);
 
-    mes_regions = lire_production("t6.txt",couts_productions,t);
+    mes_regions = lire_production("t5.ssv",couts_productions,t);
     afficher_regions(mes_regions,couts_productions);
     
 

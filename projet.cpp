@@ -288,6 +288,10 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 	
 	float importation_nationale = 0; // importation nationale 
 	int nombre_regions = taille(tache_de_calcul.region);
+    int prod_totale_region = 0; // la production totale d'une région qui est initialisée à 0
+	int region_compteur = 1 ; // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
+
+	bool depassement_date = false;
 
 	// Ce qu'on va faire c'est d'augmenter le importation_nationale autant de fois que la valeur de nombre_regions (ex: si il y a 6 régions, on va calculer l'importation nationale 6 fois)
 
@@ -295,8 +299,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
     if (flux.is_open()) {
 
 		
-        int prod_totale_region = 0; // la production totale d'une région qui est initialisée à 0
-		int region_compteur = 1 ; // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
 
         flux >>production_region.region;  // première lecture avant le tant que
 	    flux >>production_region.mois; 
@@ -318,7 +320,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
         prod_totale_nation += prod_totale_region; // c'est la production totale de toutes les régions, pas seulement d'une seule région
 		region_compteur ++;
 
-		cout << prod_totale_nation << endl;
+		//cout << prod_totale_nation << endl;
 
         echanges_totaux += production_region.importation.production; // pour calculer les echanges physiques totaux
 
@@ -326,7 +328,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 		cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
 
-		
 
         while (flux.good()) { // vérification que la lecture a été effectuée correctement
        
@@ -343,17 +344,29 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 			if (region_compteur > nombre_regions){ // la production nationale repasse à 0 quand on a fait le tout de toutes le regions
 				prod_totale_nation = 0;
-				region_compteur = 0;
-				cout << "---" << endl;
+				region_compteur = 1;
+				//cout << "---" << endl;
 			}
 
-
+			
             int prod_totale_region = 0;
             flux >>production_region.region; 
 
 	        	flux >>production_region.mois; 
 	        	flux >>production_region.jour; 
 	        	flux >>production_region.heure;
+
+
+
+				if (production_region.mois >= tache_de_calcul.mois_terminaison){
+					if(production_region.jour >= tache_de_calcul.mois_terminaison){
+						if(production_region.heure > tache_de_calcul.horaire_terminaison){
+
+							depassement_date = true;
+							
+						}
+					}
+				}
 
             	flux >>production_region.thermique.production; //pour acceder au taux : -->production_region.thermique.taux_production (le definir)
             	flux >>production_region.nucleaire.production; // les productions de chaque moyen de production
@@ -373,8 +386,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 				cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
 
-				cout << prod_totale_nation << endl;
-            
+				//cout << prod_totale_nation << endl;
 		}
 			
 			
@@ -383,6 +395,10 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 					insere_region(production_region, regions, tache_de_calcul);
 				}
+
+			if (depassement_date){
+				flux.close();	
+			}
 
 			}
         flux.close();   
@@ -643,7 +659,7 @@ int main(){
     string nom_fichier = "tache_deb.txt";
     tache_calcul t = lire_tache_calcul(nom_fichier);
 
-    mes_regions = lire_production("t6.txt",couts_productions,t);
+    mes_regions = lire_production("t5.ssv",couts_productions,t);
     afficher_regions(mes_regions,couts_productions);
     
 

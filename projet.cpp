@@ -661,10 +661,12 @@ int main(){
     tache_calcul t = lire_tache_calcul(nom_fichier);
 
 
-	cout << "Chargement..." << endl;
+	cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
     mes_regions = lire_production("t5.ssv",couts_productions,t);
     afficher_regions(mes_regions,couts_productions);
+	
+	cout << "Fin." << endl;
     
 
     return 0;

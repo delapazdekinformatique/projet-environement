@@ -647,6 +647,7 @@ int afficher_regions (Regions r,Couts couts){ // on utilise la fonction preceden
 	afficher_contenu_region(r.auvergne_rhone_alpes,11,couts);
 	afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts);
 
+
 	return 0;
 
 }
@@ -658,6 +659,9 @@ int main(){
 
     string nom_fichier = "tache_deb.txt";
     tache_calcul t = lire_tache_calcul(nom_fichier);
+
+
+	cout << "Chargement..." << endl;
 
     mes_regions = lire_production("t5.ssv",couts_productions,t);
     afficher_regions(mes_regions,couts_productions);

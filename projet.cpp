@@ -152,28 +152,18 @@ bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_m
 	// 1. le cout moyen
 	// 2. le cout marginal
 	// 3. le taux d'importation
-	// 4. la date, jour et heure
 	// Si toutes les contraintes sont respectées, la fonction renvoie true
 
 	bool conditions = false;
 
-	if (cout_moy < tache_de_calcul.cout_moyen_maximum){
+	if (cout_moy < tache_de_calcul.cout_moyen_maximum){ // 1
 
-		if (cout_marg < tache_de_calcul.cout_marginal_maximum){
+		if (cout_marg < tache_de_calcul.cout_marginal_maximum){ // 2
 
-			if (production_region >= tache_de_calcul.pourcentage_maximal_importation){
+			if (production_region >= tache_de_calcul.pourcentage_maximal_importation){ // 3
 
-				if (production.mois >= tache_de_calcul.mois_depart and production.mois <= tache_de_calcul.mois_terminaison){
+				conditions = true;
 
-					if (production.jour >= tache_de_calcul.jour_depart and production.jour <= tache_de_calcul.jour_terminaison){
-	
-						if (production.heure >= tache_de_calcul.horaire_depart and production.heure <= tache_de_calcul.horaire_terminaison){
-
-							conditions = true;
-					
-						}
-					}	
-				}
 			}
 		}
 	}
@@ -280,17 +270,17 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
     Production production_region;
 	Regions regions;
 
-
-    int prod_totale_nation = 0; // la production tôtale des 12 régions
-    int echanges_totaux = 0; // les échanges totaux des 12 régions
-	int cout_marginal = 0; // le cout marginal d'une région
-	float cout_moyen = 0; //le cout moyen des productions d'une region 
-	
-	float importation_nationale = 0; // importation nationale 
 	int nombre_regions = taille(tache_de_calcul.region);
     int prod_totale_region = 0; // la production totale d'une région qui est initialisée à 0
 	int region_compteur = 1 ; // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
-
+    int prod_totale_nation = 0; // la production tôtale des 12 régions
+    int echanges_totaux = 0; // les échanges totaux des 12 régions
+	int cout_marginal = 0; // le cout marginal d'une région
+	
+	
+	float cout_moyen = 0; //le cout moyen des productions d'une region 
+	float importation_nationale = 0; // importation nationale 
+	
 	bool depassement_date = false;
 
 	// Ce qu'on va faire c'est d'augmenter le importation_nationale autant de fois que la valeur de nombre_regions (ex: si il y a 6 régions, on va calculer l'importation nationale 6 fois)
@@ -352,55 +342,56 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
             int prod_totale_region = 0;
             flux >>production_region.region; 
 
-	        	flux >>production_region.mois; 
-	        	flux >>production_region.jour; 
-	        	flux >>production_region.heure;
+	        flux >>production_region.mois; 
+	        flux >>production_region.jour; 
+	        flux >>production_region.heure;
 
 
 
-				if (production_region.mois >= tache_de_calcul.mois_terminaison){
-					if(production_region.jour >= tache_de_calcul.mois_terminaison){
-						if(production_region.heure > tache_de_calcul.horaire_terminaison){
+			if (production_region.mois >= tache_de_calcul.mois_terminaison){
+				if(production_region.jour >= tache_de_calcul.jour_terminaison){
+					if(production_region.heure > tache_de_calcul.horaire_terminaison){
 
-							depassement_date = true;
+						depassement_date = true;
 							
-						}
 					}
 				}
+			}
 
-            	flux >>production_region.thermique.production; //pour acceder au taux : -->production_region.thermique.taux_production (le definir)
-            	flux >>production_region.nucleaire.production; // les productions de chaque moyen de production
-            	flux >>production_region.eolien.production;
-            	flux >>production_region.solaire.production;
-            	flux >>production_region.hydraulique.production;
-            	flux >>production_region.bioenergie.production;
+            flux >>production_region.thermique.production; //pour acceder au taux : -->production_region.thermique.taux_production (le definir)
+        	flux >>production_region.nucleaire.production; // les productions de chaque moyen de production
+        	flux >>production_region.eolien.production;
+        	flux >>production_region.solaire.production;
+            flux >>production_region.hydraulique.production;
+        	flux >>production_region.bioenergie.production;
 
-            	flux >>production_region.importation.production;
+            flux >>production_region.importation.production;
 
-            	taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet aussi de récuperer la production totale
-            	prod_totale_nation += prod_totale_region;
-				region_compteur ++;
-            	echanges_totaux += production_region.importation.production;
+            taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet aussi de récuperer la production totale
+            prod_totale_nation += prod_totale_region;
+			region_compteur ++;
+            echanges_totaux += production_region.importation.production;
 			
-				cout_moyen = couts_moyen(production_region,couts);
+			cout_moyen = couts_moyen(production_region,couts);
 
-				cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
+			cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
 
-				//cout << prod_totale_nation << endl;
+			if (depassement_date){ // on regarde si on a dépassé la date inscrite dans la tache de calcul
+				flux.close();	   // si c'est le cas on ferme le fichier.
+			}
+
+				
 		}
 			
 			
-			for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
+		for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
 
-				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
-					insere_region(production_region, regions, tache_de_calcul);
-				}
-
-			if (depassement_date){
-				flux.close();	
+			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
+					
+				insere_region(production_region, regions, tache_de_calcul);
+					
 			}
-
-			}
+		}
         flux.close();   
     }
     else {

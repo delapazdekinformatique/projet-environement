@@ -700,16 +700,19 @@ int main(){
 
     Regions mes_regions ;
 	Couts couts_productions = lire_couts("couts.txt");
-
-    string nom_fichier = "tache_deb.txt";
-    tache_calcul t = lire_tache_calcul(nom_fichier);
+    string tache_de_calcul = "tache_deb.txt";
+    tache_calcul t = lire_tache_calcul(tache_de_calcul);
+	int mode ;
+	
+	cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : sequentielle, 3 : mono region)\n A noter : Si vous tapez autre chose que ces trois valeurs, la methode monoregion sera choisie." << endl ;
+	cout << "Choix : " ;
+	cin >> mode ;
 
 	cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
 	auto start = high_resolution_clock::now(); // pour lancer le chrono
-
-	int mode = 1; // 1 = parallele, 2 = sequentielle, autre ou rien = mono region
-    mes_regions = lire_production("t5.ssv",couts_productions,t,mode); 
+    
+	mes_regions = lire_production("t5.ssv",couts_productions,t,mode); 
     afficher_regions(mes_regions,couts_productions,mode);
 	cout << "Fin." << endl;
 

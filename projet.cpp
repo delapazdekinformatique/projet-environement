@@ -54,6 +54,10 @@ struct Regions{ // enregistrement qui contient des liste d'enregistrement Produc
 
 	liste<Production> parallele = {} ;
 
+	// sequentielle //
+
+	liste<Production> sequentielle = {};
+
 };
 
 
@@ -79,7 +83,7 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
     
     int production_totale_echanges = 0;
     production_totale += p_r.thermique.production + p_r.nucleaire.production + p_r.eolien.production +p_r.solaire.production + p_r.hydraulique.production + p_r.bioenergie.production ;
-    production_totale_echanges += p_r.importation.production + production_totale;
+    production_totale_echanges += p_r.importation.production + production_totale; // C'est la production totale avec les echanges physiques
 
     // pour faire le taux on fait : (production * 100) / production_totale.
 
@@ -90,7 +94,7 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
     p_r.hydraulique.taux_production = (p_r.hydraulique.production * 100) / production_totale;
     p_r.bioenergie.taux_production  = (p_r.bioenergie.production * 100) / production_totale;
 
-	// le if-else sert à pour le taux importation, en fonction de si c'est de l'exportation ou de l'importation, on change le dénominateur
+	// le if-else sert pour le taux d'importation, en fonction de si c'est de l'exportation ou de l'importation, on change le dénominateur
 
     if (p_r.importation.production >= 0){
         p_r.importation.taux_production = (p_r.importation.production * 100 ) / production_totale_echanges; // importation
@@ -101,7 +105,7 @@ void taux_de_production_energie(Production & p_r, int & production_totale){
 }
 
 
-float echanges_nationaux (int echanges_totaux, int production_totale) {
+float echanges_nationaux (int echanges_totaux, int production_totale) { // renvoie les echanges physiques nationaux.
 	float resultats = (echanges_totaux*100) / production_totale;
 	return resultats;
 }
@@ -177,9 +181,9 @@ bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_m
 	return conditions;
 }
 
-void insere_region_parallele(Production p_r, Regions & r, tache_calcul tache_de_calcul){
+void insere_region_parallele(Production p_r, Regions & r, tache_calcul tache_de_calcul){ // permet l'insertion des régions dans la liste parallele
 
-	if (taille(r.parallele) < tache_de_calcul.duree){
+	if (taille(r.parallele) < tache_de_calcul.duree){  
 
 		inserer(p_r,r.parallele, taille(r.parallele)+1);
 
@@ -189,7 +193,7 @@ void insere_region_parallele(Production p_r, Regions & r, tache_calcul tache_de_
 
 void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calcul){
 
-	switch(p_r.region){ // en fonction de l'id de la région, on a un cas différent, à savoir s'inserer dans une des 12 listes des régions
+	switch(p_r.region){ // en fonction de l'id de la région, on a un cas différent : s'inserer dans une des 12 listes des régions
 
 		case 1 :
 			if (taille(r.ile_de_france) < tache_de_calcul.duree){ // ce if permet de stoper l'insertion lorsqu'on a dépasse la limite de calcul pour cette région
@@ -271,13 +275,15 @@ void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calc
 // ALGORITHMES POUR LIRE LES FICHIERS //
 
 
-Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul, int mode_calcul = 0){ // 1 : mode_calcul = parallele, 2 : mode_calcul = sequentielle, 3 : mode_calcul = mono-region
-																									// defaut : mode_calcul = mono-region
+Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul, int mode_calcul = 0){
+																									
 	/* Paramètres :
 	
 	fichier: permet de lire le fichier des productions (celui de 100 000+ lignes)
 	couts : c'est l'enregistrement permettant des lire les couts
 	tache_de_calcul : c'est l'enegistrement permettant de lire la feuille de calcul.
+	mode_calcul : c'est l'entier qui va determiner la méthode d'execution
+	prend les valeurs suivantes : 1 : mode_calcul = parallele, 2 : mode_calcul = sequentielle, autre : mode_calcul = mono-region
 	
 	*/
 
@@ -286,25 +292,20 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
     Production production_region;
 	Regions regions;
 
-	int nombre_regions = taille(tache_de_calcul.region);
-    int prod_totale_region = 0; // la production totale d'une région qui est initialisée à 0
-	int region_compteur = 1 ; // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
-    int prod_totale_nation = 0; // la production tôtale des 12 régions
-    int echanges_totaux = 0; // les échanges totaux des 12 régions
-	int cout_marginal = 0; // le cout marginal d'une région
+	int nombre_regions = taille(tache_de_calcul.region); // nombre de régions
+    int prod_totale_region = 0; 						 // la production totale d'une région qui est initialisée à 0
+	int region_compteur = 1 ; 							 // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
+    int prod_totale_nation = 0; 						 // la production tôtale des 12 régions
+    int echanges_totaux = 0; 							 // les échanges physiques totaux des 12 régions
+	int cout_marginal = 0; 								 // le cout marginal d'une région
 	
-	
-	float cout_moyen = 0; //le cout moyen des productions d'une region 
-	float importation_nationale = 0; // importation nationale 
+	float cout_moyen = 0; 								 //le cout moyen des productions d'une region 
+	float importation_nationale = 0; 					 // importation nationale 
 	
 	bool depassement_date = false;
 
-	// Ce qu'on va faire c'est d'augmenter le importation_nationale autant de fois que la valeur de nombre_regions (ex: si il y a 6 régions, on va calculer l'importation nationale 6 fois)
-
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
-
-		
 
         flux >>production_region.region;  // première lecture avant le tant que
 	    flux >>production_region.mois; 
@@ -323,26 +324,21 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 
         taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet d'avoirs les taux de productions et de récuperer la production totale
-        prod_totale_nation += prod_totale_region; // c'est la production totale de toutes les régions, pas seulement d'une seule région
+        prod_totale_nation += prod_totale_region; 
 		region_compteur ++;
-
-		//cout << prod_totale_nation << endl;
-
-        echanges_totaux += production_region.importation.production; // pour calculer les echanges physiques totaux
-
-		cout_moyen = couts_moyen(production_region,couts); // calcul du cout moyen
-
-		cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
+        echanges_totaux += production_region.importation.production; 
+		cout_moyen = couts_moyen(production_region,couts);
+		cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts);
 
 
-        while (flux.good()) { // vérification que la lecture a été effectuée correctement
+        while (flux.good()) { 
        
 			
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
 
-				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ // si c'est le cas, on fait passer le test des contraintes.
-					
-					switch (mode_calcul){
+				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
+
+					switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
 						case 1 :
 							insere_region_parallele(production_region, regions, tache_de_calcul);
@@ -362,34 +358,33 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 			}			
 
-			if (region_compteur > nombre_regions){ // la production nationale repasse à 0 quand on a fait le tout de toutes le regions
+			if (region_compteur > nombre_regions){ // la production nationale repasse à 0 quand on a fait le tour de toutes le regions
 				prod_totale_nation = 0;
 				region_compteur = 1;
-				//cout << "---" << endl;
 			}
 
 			
             int prod_totale_region = 0;
-            flux >>production_region.region; 
 
+            flux >>production_region.region; 
 	        flux >>production_region.mois; 
 	        flux >>production_region.jour; 
 	        flux >>production_region.heure;
 
 
 
-			if (production_region.mois >= tache_de_calcul.mois_terminaison){
+			if (production_region.mois >= tache_de_calcul.mois_terminaison){ // on s'assure qu'on a pas dépassé la date de fin dans la tache de calcul
 				if(production_region.jour >= tache_de_calcul.jour_terminaison){
 					if(production_region.heure > tache_de_calcul.horaire_terminaison){
 
-						depassement_date = true;
+						depassement_date = true; // si c'est la cas on passe depassement_date à true
 							
 					}
 				}
 			}
 
-            flux >>production_region.thermique.production; //pour acceder au taux : -->production_region.thermique.taux_production (le definir)
-        	flux >>production_region.nucleaire.production; // les productions de chaque moyen de production
+            flux >>production_region.thermique.production; 
+        	flux >>production_region.nucleaire.production; 
         	flux >>production_region.eolien.production;
         	flux >>production_region.solaire.production;
             flux >>production_region.hydraulique.production;
@@ -397,17 +392,17 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
             flux >>production_region.importation.production;
 
-            taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet aussi de récuperer la production totale
+            taux_de_production_energie(production_region,prod_totale_region); 
             prod_totale_nation += prod_totale_region;
 			region_compteur ++;
             echanges_totaux += production_region.importation.production;
 			
 			cout_moyen = couts_moyen(production_region,couts);
 
-			cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); // cette fonction permet de calculer le cout marginal de la region.
+			cout_marginal = cout_marginal_regional(production_region,tache_de_calcul,couts); 
 
-			if (depassement_date){ // on regarde si on a dépassé la date inscrite dans la tache de calcul
-				flux.close();	   // si c'est le cas on ferme le fichier.
+			if (depassement_date){ 
+				flux.close();	 
 			}
 
 				
@@ -416,7 +411,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			
 		for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
 
-			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ // si c'est le cas, on fait passer le test des contraintes.
+			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ 
 					
 					switch (mode_calcul){
 
@@ -517,17 +512,6 @@ Couts lire_couts(string fichier){
 
 // AFFICHAGES //
 
-int afficher(liste<int>l){
-	cout<<"<";
-	for(int c:l){
-		cout<<c<<' ';
-	};
-	cout<<">"<<endl;
-
-	return 0;
-}
-
-
 /*void afficher_tache_calcul(tache_calcul tache_de_calcul){
 
 	cout<<"l'identifiant est: "<<tache_de_calcul.identifiant<<endl;
@@ -579,11 +563,11 @@ int afficher(liste<int>l){
 
 }*/
 
-int afficher_contenu_region (liste<Production> region, int id, Couts couts){ // l'affichage des régions et de leurs valeurs, id sert à determiner la region
+int afficher_contenu_region (liste<Production> region, int id, Couts couts){
 
 	switch (id){
 
-		case 0 :
+		case 0 :	// on choisit 0 pour le mode parallèle, cela nous évite de devoir créer une seconde fonction juste pour l'affichage de cette méthode d'execution.
 			if (taille(region) > 0){
 			cout << "Parallele" << " " << taille(region) << endl;
 			}
@@ -674,7 +658,7 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts){ // 
 }
 
 
-int afficher_regions (Regions r,Couts couts, int mode = 0){ // on utilise la fonction precedente 
+int afficher_regions (Regions r,Couts couts, int mode = 0){ 
 
 	if (mode == 1){
 

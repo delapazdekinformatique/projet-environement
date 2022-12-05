@@ -704,7 +704,7 @@ int main(){
     tache_calcul t = lire_tache_calcul(tache_de_calcul);
 	int mode ;
 	
-	cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : sequentielle, 3 : mono region)\n A noter : Si vous tapez autre chose que ces trois valeurs, la methode monoregion sera choisie." << endl ;
+	cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : sequentielle, 3 : mono region)\nA noter : Si vous tapez autre chose que ces trois valeurs, la methode monoregion sera choisie." << endl ;
 	cout << "Choix : " ;
 	cin >> mode ;
 

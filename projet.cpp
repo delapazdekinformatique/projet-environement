@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include "liste.hpp"
+#include <chrono>
+using namespace std::chrono;
 using namespace std;
 
 
@@ -702,20 +704,18 @@ int main(){
     string nom_fichier = "tache_deb.txt";
     tache_calcul t = lire_tache_calcul(nom_fichier);
 
-
 	cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
-	// la derniere valeur en paramètre pour lire_production représente le mode de calcul
-	// avec 1 = parallele, 2 = sequentielle, si il n'y a rien, alors c'est mono region.
-
-	// -> lire_production(fichier, couts, tache_de_calcul, mode_de_calcul) avec mode de calcul = 0 de base
+	auto start = high_resolution_clock::now(); // pour lancer le chrono
 
 	int mode = 1; // 1 = parallele, 2 = sequentielle, autre ou rien = mono region
-
     mes_regions = lire_production("t5.ssv",couts_productions,t,mode); 
     afficher_regions(mes_regions,couts_productions,mode);
-	
 	cout << "Fin." << endl;
+
+	auto stop = high_resolution_clock::now(); // fin du chrono
+	auto duration = duration_cast<milliseconds>(stop - start);
+	cout << "Temps d'execution : " << duration.count() <<  " millisecondes" << endl;
     
 
     return 0;

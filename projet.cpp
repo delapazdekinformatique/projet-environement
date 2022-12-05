@@ -603,7 +603,7 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts, stri
 
 			case 4 :
 				if (taille(region) > 0){
-				flux << "Normandie" << " " << taille(region) << endl;
+				flux << "Normandie" << " " << taille(region) << endl; ;
 				}
 				break;
 
@@ -689,18 +689,20 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 		else{
 
-			afficher_contenu_region(r.ile_de_france,1,couts,fichier);
+			/*afficher_contenu_region(r.ile_de_france,1,couts,fichier);
 			afficher_contenu_region(r.centre_val_de_loire,2,couts,fichier);
 			afficher_contenu_region(r.bourgogne_franche_comte,3,couts,fichier);
 			afficher_contenu_region(r.normandie,4,couts,fichier);
 			afficher_contenu_region(r.hauts_de_france,5,couts,fichier);
 			afficher_contenu_region(r.grand_est,6,couts,fichier);
 			afficher_contenu_region(r.pays_de_la_loire,7,couts,fichier);
-			afficher_contenu_region(r.bretagne,8,couts,fichier);
+			afficher_contenu_region(r.bretagne,8,couts,fichier);				// PROBLEME ICI // affichage qui ecrase les autres quand plusieurs regions
 			afficher_contenu_region(r.nouvelle_aquitaine,9,couts,fichier);
 			afficher_contenu_region(r.occitanie,10,couts,fichier);
 			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts,fichier);
-			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);
+			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);*/
+
+			afficher_contenu_region(r.normandie,4,couts,fichier);
 
 		}
 	}
@@ -734,7 +736,6 @@ int main(){
 		
 		default:
 			fichier_ecriture = "monoregion.txt";
-			cout << "ok" << endl;
 			break;
 
 	}

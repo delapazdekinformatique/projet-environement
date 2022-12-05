@@ -360,8 +360,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 					for (Production ele : liste_regions_temp){
 
-						
-
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
 						case 1 :
@@ -377,19 +375,11 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							break;
 
 						}
-
-
 					}
 
 					liste_regions_temp = {};
-
 				}
-
-
-
 			}
-
-
 			
             int prod_totale_region = 0;
 

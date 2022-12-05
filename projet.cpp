@@ -565,106 +565,119 @@ Couts lire_couts(string fichier){
 
 }*/
 
-int afficher_contenu_region (liste<Production> region, int id, Couts couts){
+int afficher_contenu_region (liste<Production> region, int id, Couts couts, string fichier){
 
-	switch (id){
+	fstream flux;
+	flux.open(fichier,ios::out);
+	
+	if (flux.is_open()){
 
-		case 0 :	// on choisit 0 pour le mode parallèle, cela nous évite de devoir créer une seconde fonction juste pour l'affichage de cette méthode d'execution.
-			if (taille(region) > 0){
-			cout << "Parallele" << " " << taille(region) << endl;
-			}
-			break;
+	
+		switch (id){
 
 
-		case 1 :
-			if (taille(region) > 0){
-			cout << "Ile-de-France" << " " << taille(region) << endl;
-			}
-			break;
+			case 0 :	// on choisit 0 pour le mode parallèle, cela nous évite de devoir créer une seconde fonction juste pour l'affichage de cette méthode d'execution.
+				if (taille(region) > 0){
+				flux << "Parallele" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 2 :
-			if (taille(region) > 0){
-			cout << "Centre-Val_de_Loire" << " " << taille(region) << endl;
-			}
-			break;
 
-		case 3 :
-			if (taille(region) > 0){
-			cout << "Bourgogne-Franche-Comte" << " " << taille(region) << endl;
-			}
-			break;
+			case 1 :
+				if (taille(region) > 0){
+				flux << "Ile-de-France" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 4 :
-			if (taille(region) > 0){
-			cout << "Normandie" << " " << taille(region) << endl;
-			}
-			break;
+			case 2 :
+				if (taille(region) > 0){
+				flux << "Centre-Val_de_Loire" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 5 :
-			if (taille(region) > 0){
-			cout << "Hauts-de-France" << " " << taille(region) << endl;
-			}
-			break;
+			case 3 :
+				if (taille(region) > 0){
+				flux << "Bourgogne-Franche-Comte" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 6 :
-			if (taille(region) > 0){
-			cout << "Grand_Est" << " " << taille(region) << endl;
-			}
-			break;
+			case 4 :
+				if (taille(region) > 0){
+				flux << "Normandie" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 7 :
-			if (taille(region) > 0){
-			cout << "Pays_de_la_Loire" << " " << taille(region) << endl;
-			}
-			break;
+			case 5 :
+				if (taille(region) > 0){
+				flux << "Hauts-de-France" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 8 :
-			if (taille(region) > 0){
-			cout << "Bretagne" << " " << taille(region) << endl;
-			}
-			break;
+			case 6 :
+				if (taille(region) > 0){
+				flux << "Grand_Est" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 9 :
-			if (taille(region) > 0){
-			cout << "Nouvelle-Aquitaine" << " " << taille(region) << endl;
-			}
-			break;
+			case 7 :
+				if (taille(region) > 0){
+				flux << "Pays_de_la_Loire" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 10 :
-			if (taille(region) > 0){
-			cout << "Occitanie" << " " << taille(region) << endl;
-			}
-			break;
+			case 8 :
+				if (taille(region) > 0){
+				flux << "Bretagne" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 11 :
-			if (taille(region) > 0){
-			cout << "Auvergne-Rhone-Alpes" << " " << taille(region) << endl;
-			}
-			break;
+			case 9 :
+				if (taille(region) > 0){
+				flux << "Nouvelle-Aquitaine" << " " << taille(region) << endl;
+				}
+				break;
 
-		case 12 :
-			if (taille(region) > 0){
-			cout << "Provence-Alpes-Cote_d'Azur" << " " << taille(region) << endl;
-			}
-			break;
+			case 10 :
+				if (taille(region) > 0){
+				flux << "Occitanie" << " " << taille(region) << endl;
+				}
+				break;
 
+			case 11 :
+				if (taille(region) > 0){
+				flux << "Auvergne-Rhone-Alpes" << " " << taille(region) << endl;
+				}
+				break;
+
+			case 12 :
+				if (taille(region) > 0){
+				flux << "Provence-Alpes-Cote_d'Azur" << " " << taille(region) << endl;
+				}
+				break;
+
+		}
+
+		for (Production ele : region){
+
+			flux << ele.mois << " " << ele.jour << " " << ele.heure << " " << ele.region << " " << couts_moyen(ele, couts) << endl;
+
+		}
+
+		flux.close();
 	}
-
-	for (Production ele : region){
-
-		cout << ele.mois << " " << ele.jour << " " << ele.heure << " " << ele.region << " " << couts_moyen(ele, couts) << endl;
-
-	}	
+	else{
+		 cout << "Erreur : impossible d'ouvrir " << fichier << endl;
+	}
 
 	return 0;
 }
 
 
-int afficher_regions (Regions r,Couts couts, int mode = 0){ 
+int afficher_regions (Regions r,Couts couts, int mode, string fichier){ 
 
 	if (mode == 1){
 
-		afficher_contenu_region(r.parallele,0,couts); // on choisit 0 l'id pour la liste parallele
+		afficher_contenu_region(r.parallele,0,couts,fichier); // on choisit 0 l'id pour la liste parallele
 	}
 
 	else{
@@ -676,18 +689,18 @@ int afficher_regions (Regions r,Couts couts, int mode = 0){
 
 		else{
 
-			afficher_contenu_region(r.ile_de_france,1,couts);
-			afficher_contenu_region(r.centre_val_de_loire,2,couts);
-			afficher_contenu_region(r.bourgogne_franche_comte,3,couts);
-			afficher_contenu_region(r.normandie,4,couts);
-			afficher_contenu_region(r.hauts_de_france,5,couts);
-			afficher_contenu_region(r.grand_est,6,couts);
-			afficher_contenu_region(r.pays_de_la_loire,7,couts);
-			afficher_contenu_region(r.bretagne,8,couts);
-			afficher_contenu_region(r.nouvelle_aquitaine,9,couts);
-			afficher_contenu_region(r.occitanie,10,couts);
-			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts);
-			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts);
+			afficher_contenu_region(r.ile_de_france,1,couts,fichier);
+			afficher_contenu_region(r.centre_val_de_loire,2,couts,fichier);
+			afficher_contenu_region(r.bourgogne_franche_comte,3,couts,fichier);
+			afficher_contenu_region(r.normandie,4,couts,fichier);
+			afficher_contenu_region(r.hauts_de_france,5,couts,fichier);
+			afficher_contenu_region(r.grand_est,6,couts,fichier);
+			afficher_contenu_region(r.pays_de_la_loire,7,couts,fichier);
+			afficher_contenu_region(r.bretagne,8,couts,fichier);
+			afficher_contenu_region(r.nouvelle_aquitaine,9,couts,fichier);
+			afficher_contenu_region(r.occitanie,10,couts,fichier);
+			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts,fichier);
+			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);
 
 		}
 	}
@@ -703,17 +716,35 @@ int main(){
     string tache_de_calcul = "tache_deb.txt";
     tache_calcul t = lire_tache_calcul(tache_de_calcul);
 	int mode ;
+	string fichier_ecriture;
 	
 	cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : sequentielle, 3 : mono region)\nA noter : Si vous tapez autre chose que ces trois valeurs, la methode monoregion sera choisie." << endl ;
 	cout << "Choix : " ;
 	cin >> mode ;
+
+	switch (mode){
+
+		case 1 : 
+			fichier_ecriture = "parallele.txt";
+			break;
+
+		case 2 :
+			fichier_ecriture = "sequentielle.txt";
+			break;
+		
+		default:
+			fichier_ecriture = "monoregion.txt";
+			cout << "ok" << endl;
+			break;
+
+	}
 
 	cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
 	auto start = high_resolution_clock::now(); // pour lancer le chrono
     
 	mes_regions = lire_production("t5.ssv",couts_productions,t,mode); 
-    afficher_regions(mes_regions,couts_productions,mode);
+    afficher_regions(mes_regions,couts_productions,mode,fichier_ecriture);
 	cout << "Fin." << endl;
 
 	auto stop = high_resolution_clock::now(); // fin du chrono

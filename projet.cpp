@@ -174,7 +174,10 @@ bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_m
 
 			if (production_region >= tache_de_calcul.pourcentage_maximal_importation){ // 3
 
-				conditions = true;
+				if (production.mois >= tache_de_calcul.mois_depart and production.jour >= tache_de_calcul.jour_depart and production.heure >= tache_de_calcul.horaire_depart){
+				
+					conditions = true;
+				}
 
 			}
 		}
@@ -305,6 +308,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 	float importation_nationale = 0; 					 // importation nationale 
 	
 	bool depassement_date = false;
+	liste<Production> liste_regions_temp = {};
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -340,10 +344,11 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 
-					switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
+					/*switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
 						case 1 :
-							insere_region_parallele(production_region, regions, tache_de_calcul);
+							//insere_region_parallele(production_region, regions, tache_de_calcul);
+							inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
 							break;
 						
 						case 2:
@@ -354,16 +359,53 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							insere_region_mono(production_region, regions, tache_de_calcul);
 							break;
 
-					}
+					}*/
+
+					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
 
 				}
 
 			}			
 
 			if (region_compteur > nombre_regions){ // la production nationale repasse à 0 quand on a fait le tour de toutes le regions
+				importation_nationale = echanges_nationaux(echanges_totaux,prod_totale_nation);	
 				prod_totale_nation = 0;
+				echanges_totaux = 0;
 				region_compteur = 1;
+
+				if (importation_nationale < tache_de_calcul.pourcentage_maximal_importation_nationale){
+
+					for (Production ele : liste_regions_temp){
+
+						
+
+						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
+
+						case 1 :
+							insere_region_parallele(ele, regions, tache_de_calcul);
+							break;
+						
+						case 2:
+							//insere_region_sequentielle(ele,regions,tache_de_calcul);
+							break;
+						
+						default:
+							insere_region_mono(ele, regions, tache_de_calcul);
+							break;
+
+						}
+
+
+					}
+
+					liste_regions_temp = {};
+
+				}
+
+
+
 			}
+
 
 			
             int prod_totale_region = 0;

@@ -308,7 +308,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 	float importation_nationale = 0; 					 // importation nationale 
 	
 	bool depassement_date = false;
-	liste<Production> liste_regions_temp = {};
+	liste<Production> liste_regions_temp = {}; 			 // Création d'une liste temportaire qui prendra comme valeurs les Productions qui passent les contraintes
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -343,23 +343,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
 
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
-
-					/*switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
-
-						case 1 :
-							//insere_region_parallele(production_region, regions, tache_de_calcul);
-							inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
-							break;
-						
-						case 2:
-							//insere_region_sequentielle(production_region,regions,tache_de_calcul);
-							break;
-						
-						default:
-							insere_region_mono(production_region, regions, tache_de_calcul);
-							break;
-
-					}*/
 
 					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
 
@@ -552,65 +535,10 @@ Couts lire_couts(string fichier){
 	
 }
 
-
-
-// AFFICHAGES //
-
-/*void afficher_tache_calcul(tache_calcul tache_de_calcul){
-
-	cout<<"l'identifiant est: "<<tache_de_calcul.identifiant<<endl;
-	cout<<"le nom est: "<<tache_de_calcul.nom<<endl;
-	cout<<"la duree est: "<<tache_de_calcul.duree<<endl;
-	cout<<"le mois_depart est: "<<tache_de_calcul.mois_depart<<endl;
-	cout<<"le jour_depart est: "<<tache_de_calcul.jour_depart<<endl;
-	cout<<"l'horaire_depart est: "<<tache_de_calcul.horaire_depart<<endl;
-	cout<<"le mois_terminaison est: "<<tache_de_calcul.mois_terminaison<<endl;
-	cout<<"le jour_terminaison est: "<<tache_de_calcul.jour_terminaison<<endl;
-	cout<<"l'horaire_terminaison est: "<<tache_de_calcul.horaire_terminaison<<endl;
-	cout<<"le cout_moyen_maximum est: "<<tache_de_calcul.cout_moyen_maximum<<endl;
-	cout<<"le cout_marginal_maximum est: "<<tache_de_calcul.cout_marginal_maximum<<endl;
-	cout<<"le pourcentage_minimum_production_marginale est: "<<tache_de_calcul.pourcentage_minimum_production_marginale<<endl;
-	cout<<"le pourcentage_maximal_importation est: "<<tache_de_calcul.pourcentage_maximal_importation<<endl;
-	cout<<"le pourcentage_maximal_importation_nationale est: "<<tache_de_calcul.pourcentage_maximal_importation_nationale<<endl;
-	cout<<"les régions concernées sont: ";
-	afficher (tache_de_calcul.region);
-}
-*/
-
-/*int afficher (liste<Production> t){
-
-		for (long unsigned int  i = 1; i<= taille(t); i++){
-			
-			cout << t[i].region << " ";
-			cout << t[i].mois<< " ";
-			cout << t[i].jour<< " ";
-			cout << t[i].heure << " ";
-
-            cout << "| " ;
-
-            cout << t[i].thermique.taux_production<< "| ";
-			cout << t[i].nucleaire.taux_production<< "| ";
-			cout << t[i].eolien.taux_production << "| ";
-            cout << t[i].solaire.taux_production<< "| ";
-			cout << t[i].hydraulique.taux_production<< "| ";
-			cout << t[i].bioenergie.taux_production << "| ";
-
-            cout << "| " ;
-
-            cout << t[i].importation.taux_production << "| " ;
-			cout << endl;
-			
-		
-		}
-
-    return 0;
-
-}*/
-
 int afficher_contenu_region (liste<Production> region, int id, Couts couts, string fichier){
 
 	fstream flux;
-	flux.open(fichier,ios::out);
+	flux.open(fichier,ios::app);
 	
 	if (flux.is_open()){
 
@@ -777,6 +705,7 @@ int main(){
 		
 		default:
 			fichier_ecriture = "monoregion.txt";
+			ofstream file("monoregion.txt");
 			break;
 
 	}

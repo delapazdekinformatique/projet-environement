@@ -35,6 +35,8 @@ struct Couts{  // enregistrement qui contient les couts de productions de chaque
 
 struct Regions{ // enregistrement qui contient des liste d'enregistrement Production. chaque liste correspond à une des 12 régions
 
+	// mono-region //
+
 	liste<Production> ile_de_france = {};
 	liste<Production> centre_val_de_loire = {};
 	liste<Production> bourgogne_franche_comte = {};
@@ -47,6 +49,10 @@ struct Regions{ // enregistrement qui contient des liste d'enregistrement Produc
 	liste<Production> occitanie = {};
 	liste<Production> auvergne_rhone_alpes = {};
 	liste<Production> provence_alpes_cote_d_azur = {};
+
+	// parallele //
+
+	liste<Production> parallele = {} ;
 
 };
 
@@ -171,7 +177,17 @@ bool contraintes(Production production ,tache_calcul tache_de_calcul, int cout_m
 	return conditions;
 }
 
-void insere_region (Production p_r, Regions & r, tache_calcul tache_de_calcul){
+void insere_region_parallele(Production p_r, Regions & r, tache_calcul tache_de_calcul){
+
+	if (taille(r.parallele) < tache_de_calcul.duree){
+
+		inserer(p_r,r.parallele, taille(r.parallele)+1);
+
+	}
+
+}
+
+void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calcul){
 
 	switch(p_r.region){ // en fonction de l'id de la région, on a un cas différent, à savoir s'inserer dans une des 12 listes des régions
 
@@ -255,8 +271,8 @@ void insere_region (Production p_r, Regions & r, tache_calcul tache_de_calcul){
 // ALGORITHMES POUR LIRE LES FICHIERS //
 
 
-Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul){
-
+Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul, int mode_calcul = 0){ // 1 : mode_calcul = parallele, 2 : mode_calcul = sequentielle, 3 : mode_calcul = mono-region
+																									// defaut : mode_calcul = mono-region
 	/* Paramètres :
 	
 	fichier: permet de lire le fichier des productions (celui de 100 000+ lignes)
@@ -324,9 +340,23 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
 
-				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ 
-					// si c'est le cas, on fait passer le test des contraintes.
-					insere_region(production_region, regions, tache_de_calcul);
+				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ // si c'est le cas, on fait passer le test des contraintes.
+					
+					switch (mode_calcul){
+
+						case 1 :
+							insere_region_parallele(production_region, regions, tache_de_calcul);
+							break;
+						
+						case 2:
+							//insere_region_sequentielle(production_region,regions,tache_de_calcul);
+							break;
+						
+						default:
+							insere_region_mono(production_region, regions, tache_de_calcul);
+							break;
+
+					}
 
 				}
 
@@ -386,12 +416,26 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			
 		for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
 
-			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
+			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ // si c'est le cas, on fait passer le test des contraintes.
 					
-				insere_region(production_region, regions, tache_de_calcul);
-					
+					switch (mode_calcul){
+
+						case 1 :
+							insere_region_parallele(production_region, regions, tache_de_calcul);
+							break;
+						
+						case 2:
+							//insere_region_sequentielle(production_region,regions,tache_de_calcul);
+							break;
+						
+						default:
+							insere_region_mono(production_region, regions, tache_de_calcul);
+							break;
+
+					}
 			}
 		}
+
         flux.close();   
     }
     else {
@@ -539,6 +583,13 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts){ // 
 
 	switch (id){
 
+		case 0 :
+			if (taille(region) > 0){
+			cout << "Parallele" << " " << taille(region) << endl;
+			}
+			break;
+
+
 		case 1 :
 			if (taille(region) > 0){
 			cout << "Ile-de-France" << " " << taille(region) << endl;
@@ -623,22 +674,38 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts){ // 
 }
 
 
-int afficher_regions (Regions r,Couts couts){ // on utilise la fonction precedente 
+int afficher_regions (Regions r,Couts couts, int mode = 0){ // on utilise la fonction precedente 
 
-	afficher_contenu_region(r.ile_de_france,1,couts);
-	afficher_contenu_region(r.centre_val_de_loire,2,couts);
-	afficher_contenu_region(r.bourgogne_franche_comte,3,couts);
-	afficher_contenu_region(r.normandie,4,couts);
-	afficher_contenu_region(r.hauts_de_france,5,couts);
-	afficher_contenu_region(r.grand_est,6,couts);
-	afficher_contenu_region(r.pays_de_la_loire,7,couts);
-	afficher_contenu_region(r.bretagne,8,couts);
-	afficher_contenu_region(r.nouvelle_aquitaine,9,couts);
-	afficher_contenu_region(r.occitanie,10,couts);
-	afficher_contenu_region(r.auvergne_rhone_alpes,11,couts);
-	afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts);
+	if (mode == 1){
+
+		afficher_contenu_region(r.parallele,0,couts); // on choisit 0 l'id pour la liste parallele
+	}
+
+	else{
+
+		if (mode == 2){
 
 
+		}
+
+		else{
+
+			afficher_contenu_region(r.ile_de_france,1,couts);
+			afficher_contenu_region(r.centre_val_de_loire,2,couts);
+			afficher_contenu_region(r.bourgogne_franche_comte,3,couts);
+			afficher_contenu_region(r.normandie,4,couts);
+			afficher_contenu_region(r.hauts_de_france,5,couts);
+			afficher_contenu_region(r.grand_est,6,couts);
+			afficher_contenu_region(r.pays_de_la_loire,7,couts);
+			afficher_contenu_region(r.bretagne,8,couts);
+			afficher_contenu_region(r.nouvelle_aquitaine,9,couts);
+			afficher_contenu_region(r.occitanie,10,couts);
+			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts);
+			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts);
+
+		}
+	}
+	
 	return 0;
 
 }
@@ -654,8 +721,15 @@ int main(){
 
 	cout << "Chargement... Cela peut prendre jusqu'a plusieurs dizaines de secondes..." << endl;
 
-    mes_regions = lire_production("t5.ssv",couts_productions,t);
-    afficher_regions(mes_regions,couts_productions);
+	// la derniere valeur en paramètre pour lire_production représente le mode de calcul
+	// avec 1 = parallele, 2 = sequentielle, si il n'y a rien, alors c'est mono region.
+
+	// -> lire_production(fichier, couts, tache_de_calcul, mode_de_calcul) avec mode de calcul = 0 de base
+
+	int mode = 1; // 1 = parallele, 2 = sequentielle, autre ou rien = mono region
+
+    mes_regions = lire_production("t5.ssv",couts_productions,t,mode); 
+    afficher_regions(mes_regions,couts_productions,mode);
 	
 	cout << "Fin." << endl;
     

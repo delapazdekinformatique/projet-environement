@@ -689,7 +689,7 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 		else{
 
-			/*afficher_contenu_region(r.ile_de_france,1,couts,fichier);
+			afficher_contenu_region(r.ile_de_france,1,couts,fichier);
 			afficher_contenu_region(r.centre_val_de_loire,2,couts,fichier);
 			afficher_contenu_region(r.bourgogne_franche_comte,3,couts,fichier);
 			afficher_contenu_region(r.normandie,4,couts,fichier);
@@ -700,9 +700,8 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 			afficher_contenu_region(r.nouvelle_aquitaine,9,couts,fichier);
 			afficher_contenu_region(r.occitanie,10,couts,fichier);
 			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts,fichier);
-			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);*/
+			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);
 
-			afficher_contenu_region(r.normandie,4,couts,fichier);
 
 		}
 	}

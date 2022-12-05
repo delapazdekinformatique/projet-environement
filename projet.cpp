@@ -434,8 +434,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 				
 		}
-			
-			
+						
 		for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
 
 			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ 
@@ -467,8 +466,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
     return regions;
 }
-
-
 
 tache_calcul lire_tache_calcul(string nom_fichier){
 	tache_calcul tache_de_calcul;
@@ -538,7 +535,7 @@ Couts lire_couts(string fichier){
 int afficher_contenu_region (liste<Production> region, int id, Couts couts, string fichier){
 
 	fstream flux;
-	flux.open(fichier,ios::app);
+	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes.
 	
 	if (flux.is_open()){
 
@@ -547,82 +544,81 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts, stri
 
 
 			case 0 :	// on choisit 0 pour le mode parallèle, cela nous évite de devoir créer une seconde fonction juste pour l'affichage de cette méthode d'execution.
-				if (taille(region) > 0){
+				
 				flux << "Parallele" << " " << taille(region) << endl;
-				}
+				
 				break;
 
-
 			case 1 :
-				if (taille(region) > 0){
+				
 				flux << "Ile-de-France" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 2 :
-				if (taille(region) > 0){
+				
 				flux << "Centre-Val_de_Loire" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 3 :
-				if (taille(region) > 0){
+				
 				flux << "Bourgogne-Franche-Comte" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 4 :
-				if (taille(region) > 0){
+				
 				flux << "Normandie" << " " << taille(region) << endl; ;
-				}
+				
 				break;
 
 			case 5 :
-				if (taille(region) > 0){
+				
 				flux << "Hauts-de-France" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 6 :
-				if (taille(region) > 0){
+				
 				flux << "Grand_Est" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 7 :
-				if (taille(region) > 0){
+				
 				flux << "Pays_de_la_Loire" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 8 :
-				if (taille(region) > 0){
+				
 				flux << "Bretagne" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 9 :
-				if (taille(region) > 0){
+				
 				flux << "Nouvelle-Aquitaine" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 10 :
-				if (taille(region) > 0){
+				
 				flux << "Occitanie" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 11 :
-				if (taille(region) > 0){
+				
 				flux << "Auvergne-Rhone-Alpes" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 			case 12 :
-				if (taille(region) > 0){
+				
 				flux << "Provence-Alpes-Cote_d'Azur" << " " << taille(region) << endl;
-				}
+				
 				break;
 
 		}
@@ -672,7 +668,6 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts,fichier);
 			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);
 
-
 		}
 	}
 	
@@ -696,12 +691,16 @@ int main(){
 	switch (mode){
 
 		case 1 : 
-			fichier_ecriture = "parallele.txt";
+			{fichier_ecriture = "parallele.txt";	// on met des accolades pour pouvoir créer une variable, sinon on ne peut pas en créer.
+			ofstream file("parallele.txt");			//permet de supprimer ce qui est déjà présent dans le fichier
 			break;
+			}
 
 		case 2 :
-			fichier_ecriture = "sequentielle.txt";
+			{fichier_ecriture = "sequentielle.txt";
+			ofstream file("sequentielle.txt");
 			break;
+			}
 		
 		default:
 			fichier_ecriture = "monoregion.txt";

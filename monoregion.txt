@@ -1,3 +1,4 @@
+Ile-de-France 0
 Centre-Val_de_Loire 8
 1 1 0 2 19.7836
 1 1 1 2 19.6619
@@ -7,6 +8,7 @@ Centre-Val_de_Loire 8
 1 1 5 2 19.7009
 1 1 6 2 19.248
 1 1 7 2 19.6586
+Bourgogne-Franche-Comte 0
 Normandie 8
 1 1 0 4 33.9617
 1 1 1 4 35.1975
@@ -16,6 +18,10 @@ Normandie 8
 1 1 13 4 35.1673
 1 1 14 4 35.2276
 1 1 15 4 35.0113
+Hauts-de-France 0
+Grand_Est 0
+Pays_de_la_Loire 0
+Bretagne 0
 Nouvelle-Aquitaine 8
 1 1 0 9 27.4816
 1 1 1 9 27.9466
@@ -43,3 +49,4 @@ Auvergne-Rhone-Alpes 8
 1 1 5 11 23.4578
 1 1 6 11 23.4348
 1 1 7 11 23.4167
+Provence-Alpes-Cote_d'Azur 0

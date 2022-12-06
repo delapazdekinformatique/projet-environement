@@ -377,7 +377,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 						if ( test <= couts_moyen(ele,couts)){
 							ele_temp = ele;
-							test = couts_moyen(ele,couts);
+							test = couts_moyen(ele_temp,couts);
 							
 						}
 
@@ -698,6 +698,7 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
 
 	liste<string> arguments_programme = arguments(argc,argv);
+
 
 
     Regions mes_regions ;

@@ -692,18 +692,41 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 }
 
-int main(){
+int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
+
+	liste<string> arguments_programme = arguments(argc,argv);
+
+	for (string ele : arguments_programme){
+		cout << ele << endl;
+	}
 
     Regions mes_regions ;
-	Couts couts_productions = lire_couts("couts.txt");
-    string tache_de_calcul = "tache_deb.txt";
+    string tache_de_calcul = arguments_programme[1];
+	Couts couts_productions = lire_couts(arguments_programme[2]);
     tache_calcul t = lire_tache_calcul(tache_de_calcul);
-	int mode ;
 	string fichier_ecriture;
+	int mode ;
+
+	cout << "okok" << endl;
+	cout << arguments_programme[3];
+
+	if (arguments_programme[3] == "1"){
+		mode = 1;
+	}
+	else{
+		if (arguments_programme[3]== "2"){
+			cout << "ok" << endl;
+			mode = 2;
+		}
+		else{
+			mode = 3;
+		}
+	}
 	
-	cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : monoregion, 3 : sequentielle)\nA noter : Si vous tapez autre chose que ces trois valeurs, la methode sequentielle sera choisie." << endl ;
-	cout << "Choix : " ;
-	cin >> mode ;
+	
+	//cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : monoregion, 3 : sequentielle)\nA noter : Si vous tapez autre chose que ces trois valeurs, la methode sequentielle sera choisie." << endl ;
+	//cout << "Choix : " ;
+	//cin >> mode ;
 
 	switch (mode){
 

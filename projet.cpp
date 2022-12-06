@@ -368,7 +368,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				region_compteur = 1;
 
 				Production ele_temp;
-				float test = 1;
+				float test = 1;     // PROBLEMES ICI !!!!!!!!!!! //
 
 				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){
 
@@ -462,29 +462,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 				
 		}
-						
-		/*for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
-
-			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ 
 					
-					switch (mode_calcul){
-
-						case 1 :
-							insere_region_parallele(production_region, regions, tache_de_calcul);
-							break;
-						
-						case 2:
-							insere_region_mono(production_region, regions, tache_de_calcul);
-							break;
-						
-						default:
-							insere_region_sequentielle(production_region,regions,tache_de_calcul);
-							
-							break;
-
-					}
-			}
-		}*/
 
         flux.close();   
     }

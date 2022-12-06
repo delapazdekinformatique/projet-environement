@@ -369,20 +369,21 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				if (importation_nationale < tache_de_calcul.pourcentage_maximal_importation_nationale){
 
 					Production ele_temp;
-					int test = 100;
+					float test = 100;
 					
 					
 
 					for (Production ele : liste_regions_temp){
 
-						if ( test < couts_moyen(ele,couts)){
+						if ( test > couts_moyen(ele,couts)){
 							
 							ele_temp = ele;
 
 							test = couts_moyen(ele_temp,couts);
-							break;
 							
+														
 						}
+						
 
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
@@ -394,16 +395,16 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							insere_region_mono(ele, regions, tache_de_calcul);
 							break;
 
-						default:
-							insere_region_sequentielle(ele,regions,tache_de_calcul);
-							cout << "ok" << endl;
-							break;
+						//default:
+						//	insere_region_sequentielle(ele,regions,tache_de_calcul);
+						//	cout << "ok" << endl;
+						//	break;
 					
 						}
 					}
 
-					if (mode_calcul == 3){
-
+					if (mode_calcul != 1 and mode_calcul != 2){
+						cout << couts_moyen(ele_temp,couts)  << endl;
 						insere_region_sequentielle(ele_temp, regions, tache_de_calcul);
 
 					}

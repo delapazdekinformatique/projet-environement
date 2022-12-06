@@ -278,7 +278,7 @@ void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calc
 }
 
 
-void insere_region_sequentielle(Production p_r, Regions & r, tache_calcul tache_de_calcul){ // permet l'insertion des régions dans la liste parallele
+void insere_region_sequentielle(Production p_r, Regions & r, tache_calcul tache_de_calcul){ // permet l'insertion des régions dans la liste séquentielle
 
 	if (taille(r.sequentielle) < tache_de_calcul.duree){  
 
@@ -369,12 +369,16 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				if (importation_nationale < tache_de_calcul.pourcentage_maximal_importation_nationale){
 
 					Production ele_temp;
-					ele_temp = liste_regions_temp[1];
+					int test = 1;
+					
+					
 
 					for (Production ele : liste_regions_temp){
 
-						if (couts_moyen(ele_temp,couts) >= couts_moyen(ele,couts)){
+						if ( test <= couts_moyen(ele,couts)){
 							ele_temp = ele;
+							test = couts_moyen(ele,couts);
+							
 						}
 
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
@@ -393,7 +397,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 					if (mode_calcul == 3){
 
 						insere_region_sequentielle(ele_temp, regions, tache_de_calcul);
-
 
 					}
 
@@ -445,7 +448,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				
 		}
 						
-		for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
+		/*for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
 
 			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ 
 					
@@ -466,7 +469,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 					}
 			}
-		}
+		}*/
 
         flux.close();   
     }
@@ -696,9 +699,6 @@ int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
 
 	liste<string> arguments_programme = arguments(argc,argv);
 
-	for (string ele : arguments_programme){
-		cout << ele << endl;
-	}
 
     Regions mes_regions ;
     string tache_de_calcul = arguments_programme[1];
@@ -707,15 +707,13 @@ int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
 	string fichier_ecriture;
 	int mode ;
 
-	cout << "okok" << endl;
-	cout << arguments_programme[3];
+
 
 	if (arguments_programme[3] == "1"){
 		mode = 1;
 	}
 	else{
 		if (arguments_programme[3]== "2"){
-			cout << "ok" << endl;
 			mode = 2;
 		}
 		else{
@@ -723,11 +721,6 @@ int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
 		}
 	}
 	
-	
-	//cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : monoregion, 3 : sequentielle)\nA noter : Si vous tapez autre chose que ces trois valeurs, la methode sequentielle sera choisie." << endl ;
-	//cout << "Choix : " ;
-	//cin >> mode ;
-
 	switch (mode){
 
 		case 1 : 

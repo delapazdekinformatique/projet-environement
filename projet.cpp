@@ -277,17 +277,6 @@ void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calc
 
 }
 
-
-void insere_region_sequentielle(Production p_r, Regions & r, tache_calcul tache_de_calcul){ // permet l'insertion des régions dans la liste séquentielle
-
-	if (taille(r.sequentielle) < tache_de_calcul.duree){  
-
-		inserer(p_r,r.sequentielle, taille(r.sequentielle)+1);
-
-	}
-
-}
-
 // ALGORITHMES POUR LIRE LES FICHIERS //
 
 
@@ -299,9 +288,10 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 	couts : c'est l'enregistrement permettant des lire les couts
 	tache_de_calcul : c'est l'enegistrement permettant de lire la feuille de calcul.
 	mode_calcul : c'est l'entier qui va determiner la méthode d'execution
-	prend les valeurs suivantes : 1 : mode_calcul = parallele, 2 : mode_calcul = monoregion, autre : mode_calcul = sequentielle
+	prend les valeurs suivantes : 1 : mode_calcul = parallele, 2 : mode_calcul = sequentielle, autre : mode_calcul = mono-region
 	
 	*/
+
 
     fstream flux;
     Production production_region;
@@ -318,7 +308,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 	float importation_nationale = 0; 					 // importation nationale 
 	
 	bool depassement_date = false;
-	liste<Production> liste_regions_temp = {}; 			 // Création d'une liste temportaire qui prendra comme valeurs les Productions qui passent les contraintes
+	liste<Production> liste_regions_temp = {};
 
     flux.open(fichier, ios::in);
     if (flux.is_open()) {
@@ -354,6 +344,23 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
 
+					/*switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
+
+						case 1 :
+							//insere_region_parallele(production_region, regions, tache_de_calcul);
+							inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
+							break;
+						
+						case 2:
+							//insere_region_sequentielle(production_region,regions,tache_de_calcul);
+							break;
+						
+						default:
+							insere_region_mono(production_region, regions, tache_de_calcul);
+							break;
+
+					}*/
+
 					inserer(production_region, liste_regions_temp, taille(liste_regions_temp)+1);
 
 				}
@@ -368,18 +375,9 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 				if (importation_nationale < tache_de_calcul.pourcentage_maximal_importation_nationale){
 
-					Production ele_temp;
-					int test = 1;
-					
-					
-
 					for (Production ele : liste_regions_temp){
 
-						if ( test <= couts_moyen(ele,couts)){
-							ele_temp = ele;
-							test = couts_moyen(ele_temp,couts);
-							
-						}
+						
 
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
@@ -388,21 +386,27 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							break;
 						
 						case 2:
+							//insere_region_sequentielle(ele,regions,tache_de_calcul);
+							break;
+						
+						default:
 							insere_region_mono(ele, regions, tache_de_calcul);
 							break;
-					
+
 						}
-					}
 
-					if (mode_calcul == 3){
-
-						insere_region_sequentielle(ele_temp, regions, tache_de_calcul);
 
 					}
 
 					liste_regions_temp = {};
+
 				}
+
+
+
 			}
+
+
 			
             int prod_totale_region = 0;
 
@@ -447,8 +451,9 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 				
 		}
-						
-		/*for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
+			
+			
+		for (long unsigned int region_id : tache_de_calcul.region){ // on refait ça après le while pour pouvoir inserer la dernière Production.
 
 			if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){ 
 					
@@ -459,17 +464,16 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							break;
 						
 						case 2:
-							insere_region_mono(production_region, regions, tache_de_calcul);
+							//insere_region_sequentielle(production_region,regions,tache_de_calcul);
 							break;
 						
 						default:
-							insere_region_sequentielle(production_region,regions,tache_de_calcul);
-							
+							insere_region_mono(production_region, regions, tache_de_calcul);
 							break;
 
 					}
 			}
-		}*/
+		}
 
         flux.close();   
     }
@@ -480,6 +484,8 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
     return regions;
 }
+
+
 
 tache_calcul lire_tache_calcul(string nom_fichier){
 	tache_calcul tache_de_calcul;
@@ -546,99 +552,149 @@ Couts lire_couts(string fichier){
 	
 }
 
+
+
+// AFFICHAGES //
+
+/*void afficher_tache_calcul(tache_calcul tache_de_calcul){
+
+	cout<<"l'identifiant est: "<<tache_de_calcul.identifiant<<endl;
+	cout<<"le nom est: "<<tache_de_calcul.nom<<endl;
+	cout<<"la duree est: "<<tache_de_calcul.duree<<endl;
+	cout<<"le mois_depart est: "<<tache_de_calcul.mois_depart<<endl;
+	cout<<"le jour_depart est: "<<tache_de_calcul.jour_depart<<endl;
+	cout<<"l'horaire_depart est: "<<tache_de_calcul.horaire_depart<<endl;
+	cout<<"le mois_terminaison est: "<<tache_de_calcul.mois_terminaison<<endl;
+	cout<<"le jour_terminaison est: "<<tache_de_calcul.jour_terminaison<<endl;
+	cout<<"l'horaire_terminaison est: "<<tache_de_calcul.horaire_terminaison<<endl;
+	cout<<"le cout_moyen_maximum est: "<<tache_de_calcul.cout_moyen_maximum<<endl;
+	cout<<"le cout_marginal_maximum est: "<<tache_de_calcul.cout_marginal_maximum<<endl;
+	cout<<"le pourcentage_minimum_production_marginale est: "<<tache_de_calcul.pourcentage_minimum_production_marginale<<endl;
+	cout<<"le pourcentage_maximal_importation est: "<<tache_de_calcul.pourcentage_maximal_importation<<endl;
+	cout<<"le pourcentage_maximal_importation_nationale est: "<<tache_de_calcul.pourcentage_maximal_importation_nationale<<endl;
+	cout<<"les régions concernées sont: ";
+	afficher (tache_de_calcul.region);
+}
+*/
+
+/*int afficher (liste<Production> t){
+
+		for (long unsigned int  i = 1; i<= taille(t); i++){
+			
+			cout << t[i].region << " ";
+			cout << t[i].mois<< " ";
+			cout << t[i].jour<< " ";
+			cout << t[i].heure << " ";
+
+            cout << "| " ;
+
+            cout << t[i].thermique.taux_production<< "| ";
+			cout << t[i].nucleaire.taux_production<< "| ";
+			cout << t[i].eolien.taux_production << "| ";
+            cout << t[i].solaire.taux_production<< "| ";
+			cout << t[i].hydraulique.taux_production<< "| ";
+			cout << t[i].bioenergie.taux_production << "| ";
+
+            cout << "| " ;
+
+            cout << t[i].importation.taux_production << "| " ;
+			cout << endl;
+			
+		
+		}
+
+    return 0;
+
+}*/
+
 int afficher_contenu_region (liste<Production> region, int id, Couts couts, string fichier){
 
 	fstream flux;
-	flux.open(fichier,ios::app); // ios::app permet d'ecrire à la suite du fichier, sans supprimer les données précédentes.
+	flux.open(fichier,ios::out);
 	
 	if (flux.is_open()){
 
 	
 		switch (id){
 
-			
-
-			case -1 :
-
-				flux << "Sequentielle" << " " << taille(region) << endl;
-				break;
 
 			case 0 :	// on choisit 0 pour le mode parallèle, cela nous évite de devoir créer une seconde fonction juste pour l'affichage de cette méthode d'execution.
-				
+				if (taille(region) > 0){
 				flux << "Parallele" << " " << taille(region) << endl;
-				
+				}
 				break;
 
+
 			case 1 :
-				
+				if (taille(region) > 0){
 				flux << "Ile-de-France" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 2 :
-				
+				if (taille(region) > 0){
 				flux << "Centre-Val_de_Loire" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 3 :
-				
+				if (taille(region) > 0){
 				flux << "Bourgogne-Franche-Comte" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 4 :
-				
+				if (taille(region) > 0){
 				flux << "Normandie" << " " << taille(region) << endl; ;
-				
+				}
 				break;
 
 			case 5 :
-				
+				if (taille(region) > 0){
 				flux << "Hauts-de-France" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 6 :
-				
+				if (taille(region) > 0){
 				flux << "Grand_Est" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 7 :
-				
+				if (taille(region) > 0){
 				flux << "Pays_de_la_Loire" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 8 :
-				
+				if (taille(region) > 0){
 				flux << "Bretagne" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 9 :
-				
+				if (taille(region) > 0){
 				flux << "Nouvelle-Aquitaine" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 10 :
-				
+				if (taille(region) > 0){
 				flux << "Occitanie" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 11 :
-				
+				if (taille(region) > 0){
 				flux << "Auvergne-Rhone-Alpes" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 			case 12 :
-				
+				if (taille(region) > 0){
 				flux << "Provence-Alpes-Cote_d'Azur" << " " << taille(region) << endl;
-				
+				}
 				break;
 
 		}
@@ -670,6 +726,11 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 		if (mode == 2){
 
+
+		}
+
+		else{
+
 			afficher_contenu_region(r.ile_de_france,1,couts,fichier);
 			afficher_contenu_region(r.centre_val_de_loire,2,couts,fichier);
 			afficher_contenu_region(r.bourgogne_franche_comte,3,couts,fichier);
@@ -677,17 +738,13 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 			afficher_contenu_region(r.hauts_de_france,5,couts,fichier);
 			afficher_contenu_region(r.grand_est,6,couts,fichier);
 			afficher_contenu_region(r.pays_de_la_loire,7,couts,fichier);
-			afficher_contenu_region(r.bretagne,8,couts,fichier);				
+			afficher_contenu_region(r.bretagne,8,couts,fichier);				// PROBLEME ICI // affichage qui ecrase les autres quand plusieurs regions
 			afficher_contenu_region(r.nouvelle_aquitaine,9,couts,fichier);
 			afficher_contenu_region(r.occitanie,10,couts,fichier);
 			afficher_contenu_region(r.auvergne_rhone_alpes,11,couts,fichier);
 			afficher_contenu_region(r.provence_alpes_cote_d_azur,12,couts,fichier);
 
-		}
 
-		else{
-
-			afficher_contenu_region(r.sequentielle,-1,couts,fichier); // on choisit -1 l'id pour la liste parallele
 		}
 	}
 	
@@ -695,50 +752,31 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 }
 
-int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
-
-	liste<string> arguments_programme = arguments(argc,argv);
-
-
+int main(){
 
     Regions mes_regions ;
-    string tache_de_calcul = arguments_programme[1];
-	Couts couts_productions = lire_couts(arguments_programme[2]);
+	Couts couts_productions = lire_couts("couts.txt");
+    string tache_de_calcul = "tache_deb.txt";
     tache_calcul t = lire_tache_calcul(tache_de_calcul);
-	string fichier_ecriture;
 	int mode ;
-
-
-
-	if (arguments_programme[3] == "1"){
-		mode = 1;
-	}
-	else{
-		if (arguments_programme[3]== "2"){
-			mode = 2;
-		}
-		else{
-			mode = 3;
-		}
-	}
+	string fichier_ecriture;
 	
+	cout << "Quel methode d'execution voulez vous choisir ? (1 : parallele, 2 : sequentielle, 3 : mono region)\nA noter : Si vous tapez autre chose que ces trois valeurs, la methode monoregion sera choisie." << endl ;
+	cout << "Choix : " ;
+	cin >> mode ;
+
 	switch (mode){
 
 		case 1 : 
-			{fichier_ecriture = "parallele.txt";	// on met des accolades pour pouvoir créer une variable, sinon on ne peut pas en créer.
-			ofstream file("parallele.txt");			//permet de supprimer ce qui est déjà présent dans le fichier
+			fichier_ecriture = "parallele.txt";
 			break;
-			}
 
 		case 2 :
-			{fichier_ecriture = "monoregion.txt";
-			ofstream file("monoregion.txt");
-			break;
-			}
-			
-		default:
 			fichier_ecriture = "sequentielle.txt";
-			ofstream file("sequentielle.txt");
+			break;
+		
+		default:
+			fichier_ecriture = "monoregion.txt";
 			break;
 
 	}

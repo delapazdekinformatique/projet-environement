@@ -368,22 +368,17 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				region_compteur = 1;
 
 				Production ele_temp;
-				float test = 1;     // PROBLEMES ICI !!!!!!!!!!! //
+				float cout_eleve = 1000;     // on met un nombre très grand nombre pour l'initialisation.
 
-				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){
+				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){ // importation nationale
 
 					
-					
-					
-
 					for (Production ele : liste_regions_temp){
 
-						if ( test <= couts_moyen(ele,couts)){
+						if ( cout_eleve >= couts_moyen(ele,couts)){ // vu que cout_eleve est très grand, il sera forcément supérieur à couts_moyen.
 							
 							ele_temp = ele;
-
-							test = couts_moyen(ele_temp,couts);
-							
+							cout_eleve = couts_moyen(ele_temp,couts); // puis cout_eleve prend la valeur du cout moyen de ele.
 														
 						}
 						
@@ -398,18 +393,14 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							insere_region_mono(ele, regions, tache_de_calcul);
 							break;
 
-						//default:
-						//	insere_region_sequentielle(ele,regions,tache_de_calcul);
-						//	cout << "ok" << endl;
-						//	break;
 					
 						}
 
 						
 					}
 
-					if (mode_calcul != 1 and mode_calcul != 2){
-						
+					if (mode_calcul != 1 and mode_calcul != 2 and couts_moyen(ele_temp,couts) > 0){ // des fois, couts_moyen(ele_temp,couts) est = 0, ce qui fait
+																									// que la liste se remplie de 0.
 						insere_region_sequentielle(ele_temp, regions, tache_de_calcul);
 
 					}

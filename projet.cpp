@@ -350,6 +350,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
         while (flux.good()) { 
        
 			
+			
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
 
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
@@ -366,16 +367,18 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				echanges_totaux = 0;
 				region_compteur = 1;
 
-				if (importation_nationale < tache_de_calcul.pourcentage_maximal_importation_nationale){
+				Production ele_temp;
+				float test = 1;
 
-					Production ele_temp;
-					float test = 100;
+				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){
+
+					
 					
 					
 
 					for (Production ele : liste_regions_temp){
 
-						if ( test > couts_moyen(ele,couts)){
+						if ( test <= couts_moyen(ele,couts)){
 							
 							ele_temp = ele;
 
@@ -401,10 +404,12 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 						//	break;
 					
 						}
+
+						
 					}
 
 					if (mode_calcul != 1 and mode_calcul != 2){
-						cout << couts_moyen(ele_temp,couts)  << endl;
+						
 						insere_region_sequentielle(ele_temp, regions, tache_de_calcul);
 
 					}
@@ -412,6 +417,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 					liste_regions_temp = {};
 				}
 			}
+			
 			
             int prod_totale_region = 0;
 
@@ -704,7 +710,7 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 }
 
-int main(int argc , char * argv[]){ // t5.ssv couts.txt mode
+int main(int argc , char * argv[]){ // tache_deb.txt couts.txt 4 t5.ssv
 
 	liste<string> arguments_programme = arguments(argc,argv);
 

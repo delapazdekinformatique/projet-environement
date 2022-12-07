@@ -388,16 +388,13 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 					liste_regions_temp = {};
 				}
 			}
-			
-			
+					
             int prod_totale_region = 0;
 
             flux >>production_region.region; 
 	        flux >>production_region.mois; 
 	        flux >>production_region.jour; 
 	        flux >>production_region.heure;
-
-
 
 			if (production_region.mois >= tache_de_calcul.mois_terminaison){ // on s'assure qu'on a pas dépassé la date de fin dans la tache de calcul
 				if(production_region.jour >= tache_de_calcul.jour_terminaison){
@@ -415,7 +412,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
         	flux >>production_region.solaire.production;
             flux >>production_region.hydraulique.production;
         	flux >>production_region.bioenergie.production;
-
             flux >>production_region.importation.production;
 
             taux_de_production_energie(production_region,prod_totale_region); 
@@ -430,8 +426,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 			if (depassement_date){ 
 				flux.close();	 
 			}
-
-				
 		}
 					
 
@@ -519,8 +513,6 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts, stri
 	
 		switch (id){
 
-			
-
 			case -1 :
 
 				flux << "Sequentielle" << " " << taille(region) << endl;
@@ -528,80 +520,67 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts, stri
 
 			case 0 :	// on choisit 0 pour le mode parallèle, cela nous évite de devoir créer une seconde fonction juste pour l'affichage de cette méthode d'execution.
 				
-				flux << "Parallele" << " " << taille(region) << endl;
-				
+				flux << "Parallele" << " " << taille(region) << endl;				
 				break;
 
 			case 1 :
 				
 				flux << "Ile-de-France" << " " << taille(region) << endl;
-				
 				break;
 
 			case 2 :
 				
 				flux << "Centre-Val_de_Loire" << " " << taille(region) << endl;
-				
 				break;
 
 			case 3 :
 				
 				flux << "Bourgogne-Franche-Comte" << " " << taille(region) << endl;
-				
 				break;
 
 			case 4 :
 				
 				flux << "Normandie" << " " << taille(region) << endl; ;
-				
 				break;
 
 			case 5 :
 				
-				flux << "Hauts-de-France" << " " << taille(region) << endl;
-				
+				flux << "Hauts-de-France" << " " << taille(region) << endl;				
 				break;
 
 			case 6 :
 				
-				flux << "Grand_Est" << " " << taille(region) << endl;
-				
+				flux << "Grand_Est" << " " << taille(region) << endl;				
 				break;
 
 			case 7 :
 				
-				flux << "Pays_de_la_Loire" << " " << taille(region) << endl;
-				
+				flux << "Pays_de_la_Loire" << " " << taille(region) << endl;				
 				break;
 
 			case 8 :
 				
-				flux << "Bretagne" << " " << taille(region) << endl;
-				
+				flux << "Bretagne" << " " << taille(region) << endl;				
 				break;
 
 			case 9 :
 				
-				flux << "Nouvelle-Aquitaine" << " " << taille(region) << endl;
-				
+				flux << "Nouvelle-Aquitaine" << " " << taille(region) << endl;				
 				break;
 
 			case 10 :
 				
-				flux << "Occitanie" << " " << taille(region) << endl;
-				
+				flux << "Occitanie" << " " << taille(region) << endl;				
 				break;
 
 			case 11 :
 				
-				flux << "Auvergne-Rhone-Alpes" << " " << taille(region) << endl;
-				
+				flux << "Auvergne-Rhone-Alpes" << " " << taille(region) << endl;			
 				break;
 
 			case 12 :
 				
-				flux << "Provence-Alpes-Cote_d'Azur" << " " << taille(region) << endl;
-				
+				flux << "Provence-Alpes-Cote_d'Azur" << " " << taille(region) << endl;				
 				break;
 
 		}
@@ -660,10 +639,8 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_production   ex : tache_deb.txt couts.txt 4 t5.ssv
 
-	liste<string> arguments_programme = arguments(argc,argv);
+	liste<string> arguments_programme = arguments(argc,argv); // la liste des arguments ecrit depuis le terminal
 	string production;
-
-
     Regions mes_regions ;
     string tache_de_calcul = arguments_programme[1];
 	Couts couts_productions = lire_couts(arguments_programme[2]);

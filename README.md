@@ -1,5 +1,7 @@
 # projet environement
 
+/!\ Dans le fichier tache.txt, il est impératif de laisser un espace à la dernière ligne, sinon la dernière région ne sera pas prise en compte /!\
+
 Fichiers requis : 1 fichier tache.txt, 1 fichier cout.txt, 1 fichier production de format .txt ou .ssv
 				  Le fichier regions.txt n'étant pas utilisé, car les régions sont initialisées dans le script.
 				  

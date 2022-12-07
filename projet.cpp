@@ -511,7 +511,7 @@ int afficher_contenu_region (liste<Production> region, int id, Couts couts, stri
 	if (flux.is_open()){
 
 	
-		switch (id){
+		switch (id){ // MODIFICATION ICI //
 
 			case -1 :
 
@@ -651,7 +651,6 @@ int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_produc
 	for (string ele : arguments_programme){
 		production = ele;
 	}
-
 
 	if (arguments_programme[3] == "1"){
 		mode = 1;

@@ -63,13 +63,7 @@ struct Regions{ // enregistrement qui contient des liste d'enregistrement Produc
 };
 
 
-
-
-
-
 // FONCTIONS ET PROCEDURES //
-
-
 
 
 
@@ -193,7 +187,6 @@ void insere_region_parallele(Production p_r, Regions & r, tache_calcul tache_de_
 		inserer(p_r,r.parallele, taille(r.parallele)+1);
 
 	}
-
 }
 
 void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calcul){
@@ -271,10 +264,7 @@ void insere_region_mono (Production p_r, Regions & r, tache_calcul tache_de_calc
 				inserer(p_r, r.provence_alpes_cote_d_azur, taille(r.provence_alpes_cote_d_azur)+1);
 			}
 			break;
-
 	}
-
-
 }
 
 
@@ -312,8 +302,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 	int region_compteur = 1 ; 							 // il va s'incrementer à chaque fois qu'on calcul une nouvelle region jusqu'a ce qu'on fasse toutes les régions
     int prod_totale_nation = 0; 						 // la production tôtale des 12 régions
     int echanges_totaux = 0; 							 // les échanges physiques totaux des 12 régions
-	int cout_marginal = 0; 								 // le cout marginal d'une région
-	
+	int cout_marginal = 0; 								 // le cout marginal d'une région	
 	float cout_moyen = 0; 								 //le cout moyen des productions d'une region 
 	float importation_nationale = 0; 					 // importation nationale 
 	
@@ -337,8 +326,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
         flux >>production_region.importation.production;
 
-
-
         taux_de_production_energie(production_region,prod_totale_region); // cette procedure permet d'avoirs les taux de productions et de récuperer la production totale
         prod_totale_nation += prod_totale_region; 
 		region_compteur ++;
@@ -348,9 +335,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 
 
         while (flux.good()) { 
-       
-			
-			
+       			
 			for (long unsigned int region_id : tache_de_calcul.region){ // on vérifie que l'id de la région est présent dans la liste des régions de la feuille de calcul
 
 				if (region_id == production_region.region and contraintes(production_region,tache_de_calcul,cout_marginal,cout_moyen,prod_totale_region)){
@@ -371,7 +356,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 				float cout_eleve = 1000;     // on met un nombre très grand nombre pour l'initialisation.
 
 				if (importation_nationale <= tache_de_calcul.pourcentage_maximal_importation_nationale){ // importation nationale
-
 					
 					for (Production ele : liste_regions_temp){
 
@@ -382,7 +366,6 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 														
 						}
 						
-
 						switch (mode_calcul){ // en fonction du mode de calcul, on choisit une méthode d'execution
 
 						case 1 :
@@ -393,10 +376,7 @@ Regions lire_production (string fichier,Couts couts,tache_calcul tache_de_calcul
 							insere_region_mono(ele, regions, tache_de_calcul);
 							break;
 
-					
-						}
-
-						
+						}						
 					}
 
 					if (mode_calcul != 1 and mode_calcul != 2 and couts_moyen(ele_temp,couts) > 0){ // des fois, couts_moyen(ele_temp,couts) est = 0, ce qui fait

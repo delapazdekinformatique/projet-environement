@@ -492,10 +492,9 @@ tache_calcul lire_tache_calcul(string nom_fichier){
 		while (flux.good()){
 
 			inserer(nb, li, taille(li)+1);
-
 			flux >> nb ;
 		}
-
+			inserer(nb, li, taille(li)+1); // on insere une dernière fois pour pas passer la dernière région
 			tache_de_calcul.region = li;
 
 		

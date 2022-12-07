@@ -679,10 +679,10 @@ int afficher_regions (Regions r,Couts couts, int mode, string fichier){
 
 }
 
-int main(int argc , char * argv[]){ // tache_deb.txt couts.txt 4 t5.ssv
+int main(int argc , char * argv[]){ // tache_de_calcul couts mode fichier_production   ex : tache_deb.txt couts.txt 4 t5.ssv
 
 	liste<string> arguments_programme = arguments(argc,argv);
-
+	string production;
 
 
     Regions mes_regions ;
@@ -692,6 +692,9 @@ int main(int argc , char * argv[]){ // tache_deb.txt couts.txt 4 t5.ssv
 	string fichier_ecriture;
 	int mode ;
 
+	for (string ele : arguments_programme){
+		production = ele;
+	}
 
 
 	if (arguments_programme[3] == "1"){
@@ -699,7 +702,6 @@ int main(int argc , char * argv[]){ // tache_deb.txt couts.txt 4 t5.ssv
 	}
 	else{
 		if (arguments_programme[3]== "2"){
-			cout << "ok" << endl;
 			mode = 2;
 		}
 		else{
@@ -732,7 +734,7 @@ int main(int argc , char * argv[]){ // tache_deb.txt couts.txt 4 t5.ssv
 
 	auto start = high_resolution_clock::now(); // pour lancer le chrono
     
-	mes_regions = lire_production("t5.ssv",couts_productions,t,mode); 
+	mes_regions = lire_production(production,couts_productions,t,mode);  // Erreur qui fait que quand on utilise arguments_programme au lieu d'un vrai string ça plante.
     afficher_regions(mes_regions,couts_productions,mode,fichier_ecriture);
 	cout << "Fin." << endl;
 
